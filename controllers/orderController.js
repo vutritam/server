@@ -18,7 +18,6 @@ const getProductByUserId = asyncHandler(async(req, res)=>{
 })
 
 const createNewOrder = asyncHandler(async(req, res)=>{
-    // const { id } = req.params
     const {tableNumber , productId, location} = req.body
     const getProductById = await Products.findOne(productId).exec()
     const objectOrder = { tableNumber, productId: getProductById, location: location}
