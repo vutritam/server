@@ -1,0 +1,41 @@
+POST http://localhost:3500/users
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "username": "vu tri tam",
+    "password": "12345678",
+    "roles": ["Client"]
+}
+
+###
+GET http://localhost:3500/products
+
+
+
+
+
+###
+GET http://localhost:3500/users
+
+
+###
+GET http://localhost:3500/order/getProductByIdLocationUser/
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NTAzNTg5ODJ9.AHmRNgtATHFwZ1Uh7mK8_ezOImVgVv7nYtJSW5b9mEg
+
+// tâm -  location: 403 châu thành tây ninh - general 30 QR code - user order -> tâm: bàn số 1, nước ngọt
+// điều kiện render:
+//  - dựa vào location để render list (bàn order, sản phẩm order, thời gian đặt)
+//  - user behavior (order - send message - render realtime list item order at admin page)
+
+###
+POST http://localhost:3500/auth/login
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "username": "vu tri tam",
+    "password": "12345678"
+}
