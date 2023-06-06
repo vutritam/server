@@ -11,15 +11,23 @@ const init = (server) => {
           methods: ["GET", "POST"]
         }
     });
+    let arr =[]
+    
     // connected
     io.on('connection', (socket) => {
-        console.log('A client connected');
+        console.log('A client connected');    
         socket.on('myEvent', (data) => {
-          console.log('Received event from client:', data);
-          let arr =[]
-          let response
+        // Lấy thời gian hiện tại
+        var thoiGianHienTai = new Date()
+
+        // Lấy giờ, phút và giây
+        var gio = thoiGianHienTai.getHours()
+        var phut = thoiGianHienTai.getMinutes()
+        var giay = thoiGianHienTai.getSeconds()
+        var gioPhutGiay = gio + ':' + phut + ':' + giay
+        let response
            // Gửi phản hồi về cho khách hàng
-             response='Món của bạn đã đặt thành công';
+            response = { noti:'Món của bạn đã đặt thành công', time: gioPhutGiay};
             arr.push(response)
             socket.emit('response', arr);
         });
