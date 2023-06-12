@@ -6,9 +6,9 @@ const { upload } = require("../middleware/verifyUploadFile");
 const getAllProduct = async (req, res) => {
   const product = await productModel.find();
   if (product) {
-    return res.status(200).json({ status: true, data: product });
+    return res.status(200).json({ status: true, success: true, data: product });
   }
-  return res.status(400).json({ status: false, data: [] });
+  return res.status(400).json({ status: false, success: true, data: [] });
 };
 
 // @desc createProduct

@@ -231,3 +231,14 @@
 20230525	22:20:26	8322992a-1e11-4639-b106-dc5991683cd6	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	POST	/users/undefined	http://localhost:3000
 20230525	22:20:58	a8e767b2-420f-4be6-b0aa-87cfb3ce21b2	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	POST	/users/undefined	http://localhost:3000
 20230525	22:43:09	9f1ec9ca-bf2c-4694-87b0-682d3d1c329a	CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "User"	POST	/users/undefined	http://localhost:3000
+20230611	11:31:07	29665755-9713-4a03-b6ca-9fc8e11f8265	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	11:32:38	2b803f63-84fd-4f8e-830f-047ce9d4623d	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	16:39:36	58aa00de-f0de-4a88-8fa1-36db6b30ba30	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	16:49:16	3f7a029b-0996-4c2d-884b-18b2b6e74213	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 0921masdmasdmas2	POST	/order/createOrder	undefined
+20230611	16:50:49	6df1584c-606a-43c8-b477-cc60a697b246	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 0921masdmasdmas2	POST	/order/createOrder	undefined
+20230611	17:24:36	d143006b-2b54-47ee-8939-37a0436365a2	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	17:27:55	3e6a8b1a-d9b3-4f7e-b9f6-b09f33b26e7b	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	17:31:20	22e40704-d3c6-4b30-97bf-15e4b1332120	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	http://localhost:3000
+20230611	17:37:05	afdd851a-64a7-4f09-8049-3e942538fb52	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 0921masdmasdmas2	POST	/order/createOrder	undefined
+20230611	17:37:40	b3b4d3e6-1136-4613-b726-87c6808c0576	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 646a432b2966f6cadbf0d144	POST	/order/createOrder	undefined
+20230611	17:38:30	9e373486-df1e-4609-9b79-9a7e7af13bfe	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	undefined

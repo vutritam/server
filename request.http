@@ -20,6 +20,29 @@ GET http://localhost:3500/products
 GET http://localhost:3500/users
 
 
+
+###
+POST http://localhost:3500/order/createOrder
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "tableNumber": 1,
+    "productId": "646a432b2966f6cadbf0d144",
+    "location":"609/88/99 tây ninh",
+    "status": "",
+    "isPaid" : false,
+    "isCancelled":false
+}
+
+
+
+
+###
+GET http://localhost:3500/order/getAll
+
+
 ###
 GET http://localhost:3500/order/getProductByIdLocationUser/
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NTAzNTg5ODJ9.AHmRNgtATHFwZ1Uh7mK8_ezOImVgVv7nYtJSW5b9mEg
