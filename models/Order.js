@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const { Schema } = mongoose;
 
 
 'error_network' // lỗi mạng
@@ -12,15 +12,16 @@ const mongoose = require('mongoose')
 const orderSchema = new mongoose.Schema({
     tableNumber: {
         type: Number,
-        defaultValue: null
+        default: 0
     },
-    productId: {
-        type: String,
-        defaultValue: null
+    quantity:{
+        type: Number,
+        required: true
     },
+    productId: { type: Schema.Types.ObjectId, ref: 'Products' },
     location:{
         type: String,
-        defaultValue: null
+        default: ''
     },
     status: {
         type: String,

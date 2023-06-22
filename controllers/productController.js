@@ -3,6 +3,7 @@ const { upload } = require("../middleware/verifyUploadFile");
 // @desc getAllProducts
 // @route POST /products
 // @access Public
+const multer = require('multer');
 const getAllProduct = async (req, res) => {
   const product = await productModel.find();
   if (product) {
@@ -40,8 +41,9 @@ const createProduct = async (req, res) => {
     return res.json({ statuCode:400, data:[],  message: "Duplicate name product", success:false   });
   }
 
-
+console.log(req.file,'req.file');
     const imageName = req.file.originalname;
+    
     // Tiếp tục xử lý tạo sản phẩm
 
     const newProduct = {

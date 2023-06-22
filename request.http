@@ -37,6 +37,40 @@ Content-Type: application/json
 }
 
 
+###
+POST http://localhost:3500/order/getAllOrderByLocation
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "location":"409/99 Tân chánh hiệp 12 quận 12 TP.HCM"
+}
+
+
+
+###
+POST http://localhost:3500/order/getAllByLocationSocket
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "location" : "409/99 Tân chánh hiệp 12 quận 12 TP.HCM"
+}
+
+
+
+###
+POST http://localhost:3500/order/getAllOrderByNumberTable
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "tableNumber" : 1
+}
+
 
 
 ###

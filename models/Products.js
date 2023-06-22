@@ -7,7 +7,6 @@ const productSchema = new mongoose.Schema({
     },
     file:{
         type: String,
-        default:'https://www.pngarts.com/files/11/Avatar-Transparent-Images.png',
         required: true
     },
     price: {

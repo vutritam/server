@@ -1,5 +1,5 @@
 const socketIO = require('socket.io');
-const { getProductByLocation } = require('../controllers/orderController');
+const { getAllByLocationSocket } = require('../controllers/orderController');
 
 let io;
 
@@ -33,14 +33,14 @@ const init = (server) => {
             socket.emit('response', arr);
         });
         socket.on('getProductOrder', async(data) => {
-          let result = await getProductByLocation(data)
-          console.log(result,'resProductOrder');
-          socket.emit('resProductOrder', result);
+          let result = await getAllByLocationSocket(data)
+          io.to('room').emit('resProductOrder', result);
         })
         // disconnected 
         socket.on('disconnect', () => {
             console.log('A client disconnected');
         });
+        socket.join('room');
       });
 };
 

@@ -242,3 +242,18 @@
 20230611	17:37:05	afdd851a-64a7-4f09-8049-3e942538fb52	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 0921masdmasdmas2	POST	/order/createOrder	undefined
 20230611	17:37:40	b3b4d3e6-1136-4613-b726-87c6808c0576	ObjectParameterError: Parameter "filter" to findOne() must be an object, got 646a432b2966f6cadbf0d144	POST	/order/createOrder	undefined
 20230611	17:38:30	9e373486-df1e-4609-9b79-9a7e7af13bfe	Error: Cannot set headers after they are sent to the client	POST	/order/createOrder	undefined
+20230616	23:02:24	f6ed623a-7849-43cf-a847-81d019903404	StrictPopulateError: Cannot populate path `Products` because it is not in your schema. Set the `strictPopulate` option to false to override.	GET	/order/getAll	undefined
+20230618	16:03:35	ffc052cc-a328-4435-af12-309f53898b02	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230618	16:16:56	c21fd746-b637-4f10-b77b-6e2795e8cf8e	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230618	16:16:56	658b7349-ec07-4bd2-8bcb-efd5528fc94d	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:27:49	02e55e1a-1a0f-4bf4-8728-5993c827ccc6	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:27:49	ac22fc82-6fc0-488a-99e6-fb7d4a6a1d77	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:29:39	0b0815e0-0cf1-452e-b0f0-76106ac4e458	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:29:39	f0d7b932-8d75-42f9-8a4c-ff71bb0e653b	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:29:44	76dcea92-5884-4f14-8875-2dbcc393cce2	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:29:44	6928c00b-f814-4b4f-8a2b-07372652d9a4	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:30:46	561143db-4734-4c55-88d3-add7c99f716e	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	21:32:10	a8901871-1990-4fcd-bf16-0f53139abc5e	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	22:36:05	221674e0-5cb4-4a2b-baac-8964ed27db29	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	22:36:05	6cb68b7c-577a-41e5-ac00-161842857c60	ReferenceError: location is not defined	POST	/order/getAllOrderByLocation	http://localhost:3000
+20230619	22:40:37	1ddcac4a-d93e-4664-aa9a-17baf65fe87b	SyntaxError: Unexpected token } in JSON at position 40	POST	/order/getAllOrderByLocation	undefined
