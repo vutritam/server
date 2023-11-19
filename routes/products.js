@@ -7,5 +7,6 @@ const upload = require("../middleware/verifyUploadFile");
 // router.use(verifyJWT)
 router.route("/").get(productController.getAllProduct);
 router.route("/add").post(upload.single('file'),productController.createProduct);
+router.route("/filterByCondition").post(productController.getProductFilterByCondition);
 
 module.exports = router;

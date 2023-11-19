@@ -9,6 +9,24 @@ Content-Type: application/json
     "roles": ["Client"]
 }
 
+
+###
+POST http://localhost:3500/workshift/add
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
+
+
+{
+    "nameWork": "Ca 3",
+    "start_time": "2023-11-18T19:00:00",
+    "end_time": "2023-11-19T22:00:00"
+}
+
+###
+POST http://localhost:3500/messageData/deleteAllNoti
+Content-Type: application/json
+
+
 ###
 GET http://localhost:3500/products
 

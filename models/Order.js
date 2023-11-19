@@ -23,9 +23,13 @@ const orderSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    description:  {
+        type: String,
+        default:  ''
+    },
     status: {
         type: String,
-        default:  ''//['error_network', 'order_success', 'order_failured', 'order_inprogess', 'order_delivery','order_done']
+        default:  'order_inprogess'//['error_network', 'order_success', 'order_failured', 'order_inprogess', 'order_delivery','order_done']
     },
     isPaid:{
         type: Boolean,

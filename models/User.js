@@ -25,9 +25,17 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: ['client']
     },
+    infomation:{
+        type: String,
+        default:'',
+    },
     active: {
         type: Boolean,
         default: true
+    },
+    createdAt:{
+        type: Date,
+        default: new Date()
     }
 })
 

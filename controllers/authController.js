@@ -49,7 +49,7 @@ const login = async (req, res) => {
   });
 
   // Send accessToken containing username and roles
-  res.json({ accessToken, username: foundUser.username, userId: foundUser.id,location:foundUser.location, roles: foundUser.roles, success:true ,message:"Login success",});
+  return res.json({ accessToken, data: {username: foundUser.username, userId: foundUser.id,location:foundUser.location, roles: foundUser.roles}, success:true ,message:"Login success",});
 };
 
 
