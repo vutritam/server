@@ -32,7 +32,7 @@ const getAllOrderByLocation = async(req, res)=>{
 const getAllByLocationSocket = asyncHandler(async(data)=>{
     const { location } = data
 
-    const getProductByLocationEmployee = await Order.find({ location: location,  status: { $ne: 'order_deleted' } }).populate('productId').exec()
+    const getProductByLocationEmployee = await Order.find({ location: location,  status: { $ne: 'order_deleted' } }).sort({date: -1}).populate('productId').exec()
     // console.log(getProductByLocationEmployee,'getProductByLocationEmployee');
     if(getProductByLocationEmployee){
        let data = { message: `get product success`, success: true, data: getProductByLocationEmployee}
@@ -61,7 +61,7 @@ const getAllOrderByNumberTableAndLocationUser = async(req, res)=>{
     return res.json({ message: `Get all failure`, status: 400, data: [], success: false } )
 }
 const getAllOrderByUser = async(req, res)=>{
-    const getAllOrderByUser = await Order.find().populate('productId').exec()
+    const getAllOrderByUser = await Order.find().populate('productId').sort({date: -1}).exec()
     if(getAllOrderByUser){
         return res.status(200).json({ message: `Get all success`, status: 200, data: getAllOrderByUser, success: true } )
     }
@@ -72,13 +72,13 @@ const getProductsByRole =async(req, res) =>{
     const { userRole, location } = req.body
     switch (userRole) {
         case 'admin':
-            let getDataAdmin = await Order.find().populate('productId').exec()
+            let getDataAdmin = await Order.find().populate('productId').sort({date: -1}).exec()
             if(getDataAdmin){
                 return res.status(200).json({ message: `Get all success`, status: 200, data: getDataAdmin, success: true } )
             }
             return res.status(400).json({ message: `Not found item`, status: 400, data: [], success: false } )
         case 'client':
-            let getDataEmployee = await Order.find({ location: location, status: { $ne: 'order_deleted' } }).populate('productId').exec()
+            let getDataEmployee = await Order.find({ location: location, status: { $ne: 'order_deleted' } }).populate('productId').sort({date: -1}).exec()
             if(getDataEmployee){
                 return res.status(200).json({ message: `Get all success`, status: 200, data: getDataEmployee, success: true } )
             }
