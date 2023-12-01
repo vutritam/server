@@ -127,23 +127,50 @@ const updateRecordConfirmOrderNotification = async (idItem, data) => {
 
 //POST NOTIFICATION 
 const addNotificationData = async (dataMessage, message) => {
-  let {tableNumber, location, productId, userId} = dataMessage;
+  let { tableNumber, location, productId, userId } = dataMessage;
 
+  // Kiểm tra xem tableNumber đã tồn tại trong CSDL hay chưa
+  const existingNotification = await NotiModel.findOne({ tableNumber });
+
+  if (existingNotification) {
+    // Nếu đã tồn tại, thêm mới productId vào mảng nếu chưa tồn tại
+    const updatedNotification = await NotiModel.findOneAndUpdate(
+      { tableNumber, productId: { $nin: [productId] } }, // $nin: "not in"
+      { $addToSet: { productId } },
+      { new: true }
+    );
+
+    if (updatedNotification) {
+      console.log(`Added new productId to existing notification: ${updatedNotification}`);
+      return true;
+    } else {
+      console.log(`ProductId already exists in the notification: ${existingNotification}`);
+      return false;
+    }
+  }
+
+  // Nếu chưa tồn tại, tạo mới thông báo
   let dataMsg = {
     message: message,
-    tableNumber:  tableNumber,
+    tableNumber: tableNumber,
     location: location,
-    productId: productId,
+    productId: [productId], // Tạo mảng mới với productId
     userId: userId,
     isPage: 'user_order'
-  }
-  const data = await NotiModel.create(dataMsg)
-  if (data) { //created 
-      return true
+  };
+
+  const data = await NotiModel.create(dataMsg);
+  if (data) {
+    // Đã tạo thành công
+    return true;
   } else {
-      return false
+    // Lỗi khi tạo
+    return false;
   }
 };
+
+
+
 
 
 module.exports = {

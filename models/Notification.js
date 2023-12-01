@@ -36,7 +36,7 @@ const notifiSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    productId: { type: Schema.Types.ObjectId, ref: 'Products' },
+    productId:[ { type: Schema.Types.ObjectId, ref: 'Products' }],
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
     workShiftId: { type: Schema.Types.ObjectId, ref: 'WorkShift' },
     isPage: {

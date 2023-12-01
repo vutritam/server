@@ -1,6 +1,6 @@
 const socketIO = require('socket.io');
 const { addNotificationData, addNotificationDataByUserRole, updateRecordConfirmOrderNotification, getNotificationDataBySocket } = require('../controllers/notifiController');
-const { getAllByLocationSocket } = require('../controllers/orderController');
+const { getAllByLocationSocket, getAllOrderByLocationSocket } = require('../controllers/orderController');
 const { getWorkShiftByTime } = require('../controllers/workShifltController');
 
 let io;
@@ -25,7 +25,6 @@ const init = (server) => {
               dateTime: thoiGianHienTai,
               locationUser: data?.location
             };
-            console.log(data,'dataConfirm');
             // let response = { message:'Món của bạn đã đặt thành công', dateTime: thoiGianHienTai};
             // await addNotificationDataByUserRole(data, `Có một thông báo mới từ bàn số ${data.tableNumber}`)
             await addNotificationData(data,`Đang chờ nhân viên xác nhận`)
@@ -34,6 +33,12 @@ const init = (server) => {
             io.to('room').emit('responseEmployee', result);
           
         });
+        socket.on('getAllOrderByStatus', async(data) => {
+          const {tableNumber, location} = data
+          console.log(data,'status');
+          let result = await getAllOrderByLocationSocket(tableNumber, location)
+          io.to('room').emit('resAllOrderByStatus', result);
+        })
         socket.on('getProductOrder', async(data) => {
           let result = await getAllByLocationSocket(data)
           io.to('room').emit('resProductOrder', result);

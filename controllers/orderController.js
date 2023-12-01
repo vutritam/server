@@ -107,6 +107,15 @@ const deleteOrder = async(req, res)=>{
     return res.status(400).json({ message: `Not found item`, status: 400, data: [], success: false } )
 }
 
+const getAllOrderByLocationSocket=async(tableNumber,location )=>{
+    const getProductByTable = await Order.find({ tableNumber: tableNumber, location: location }).populate('productId').exec()
+    // console.log(tableNumber,'tableNumber');
+    if(getProductByTable){
+        return getProductByTable
+    }
+    return getProductByTable
+}
+
 const handleDeleteAllOrder=async()=>{
     try {
         const result = await Order.deleteMany({});
@@ -143,33 +152,51 @@ const handleUpdateStatusOrder = async(req, res) =>{
 }
 
 
-const createNewOrder = async(req, res)=>{
-    const {tableNumber , productId, location, quantity, description} = req.body
-    // console.log(quantity,'quantity');
-    
-    // const getProductById = await Products.findOne({_id: productId}).exec()
-    const objectOrder = { tableNumber, quantity, description: description, productId: productId, location: location, ...req.body}
-    // console.log(req,'objectOrder');
-       // Create and store new user 
-    const orderUser = await Order.create(objectOrder)
+const createNewOrder = async (req, res) => {
+    const { tableNumber, productId, location, quantity, description, status } = req.body;
 
-    // ví dụ: bàn 1, nước 1, địa điểm: tây ninh
+    // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
+    const existingOrder = await Order.findOne({ tableNumber, productId, status: { $ne: 'order_success' } }).exec();
+    console.log('vào existingOrder', existingOrder);
+    if (existingOrder) {
+        // Nếu đã tồn tại
+        if (existingOrder.status !== 'order_success') {
+            console.log('vào existingOrder.status !== order_success');
+            // Nếu status khác "order_success", cập nhật số lượng
+            existingOrder.quantity += quantity;
+            await existingOrder.save();
 
-    if (orderUser) { //created 
-       return res.json({ message: `New order created`, status: 200, data:[], success: true } )
+            return res.json({ message: 'Order quantity updated', status: 200, data: existingOrder, success: true });
+        } else {
+            console.log('vào Cannot update order quantity, order already marked as order_success');
+            const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
+            const orderUser = await Order.create(objectOrder);
+            if(orderUser) {
+                return res.json({ message: 'New order created', status: 200, data: orderUser, success: true });
+
+            }
+            // Nếu status là "order_success", trả về thông báo lỗi
+            return res.json({ message: 'Cannot update order quantity, order already marked as order_success', status: 400, data: [], success: false });
+        }
     } else {
-        return res.json({ message: 'Invalid user data received', status: 400, data:[], success:false })
+        // Nếu không tồn tại, tạo mới đơn hàng mới
+        if (status !== 'order_success') {
+            console.log('vào tatus !== order_success');
+            const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
+            const orderUser = await Order.create(objectOrder);
+
+            return res.json({ message: 'New order created', status: 200, data: orderUser, success: true });
+        } else {
+            console.log('vào Cannot create new order, status is "order_success"');
+            // Nếu status là "order_success", trả về thông báo lỗi
+            return res.json({ message: 'Cannot create new order, status is "order_success"', status: 400, data: [], success: false });
+        }
     }
-    
-    // if(orderUser){
-    //    let data = { success: true, data: getProductById }
+};
 
-    //    res.status(200).json(data)
 
-    //    // Gửi dữ liệu mới đến client thông qua Socket.IO
-    //    io.emit('orderDataUpdated', data);
-    // }
-}
+
+
 
 module.exports = {
     getAllByLocationSocket,
@@ -182,5 +209,6 @@ module.exports = {
     handleDeleteAllOrder,
     handleUpdateStatusOrder,
     getProductsByRole,
+    getAllOrderByLocationSocket,
     getAllOrderByNumberTableAndLocationUser
 }
