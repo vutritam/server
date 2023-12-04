@@ -157,18 +157,15 @@ const createNewOrder = async (req, res) => {
 
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({ tableNumber, productId, status: { $ne: 'order_success' } }).exec();
-    console.log('vào existingOrder', existingOrder);
     if (existingOrder) {
         // Nếu đã tồn tại
         if (existingOrder.status !== 'order_success') {
-            console.log('vào existingOrder.status !== order_success');
             // Nếu status khác "order_success", cập nhật số lượng
             existingOrder.quantity += quantity;
             await existingOrder.save();
 
             return res.json({ message: 'Order quantity updated', status: 200, data: existingOrder, success: true });
         } else {
-            console.log('vào Cannot update order quantity, order already marked as order_success');
             const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
             const orderUser = await Order.create(objectOrder);
             if(orderUser) {
@@ -181,7 +178,6 @@ const createNewOrder = async (req, res) => {
     } else {
         // Nếu không tồn tại, tạo mới đơn hàng mới
         if (status !== 'order_success') {
-            console.log('vào tatus !== order_success');
             const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
             const orderUser = await Order.create(objectOrder);
 

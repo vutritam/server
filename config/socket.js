@@ -18,26 +18,34 @@ const init = (server) => {
     
     // connected
     io.on('connection', (socket) => {  
+      socket.on('joinRoom', (roomName) => {
+        socket.join(roomName);
+        console.log('Joined room:', roomName);
+      });
+
         socket.on('myEvent', async(data) => {
-          var thoiGianHienTai = new Date()
-           let responseEmployee = { 
-              message: `Có một thông báo mới từ bàn số ${data.tableNumber}`, 
-              dateTime: thoiGianHienTai,
-              locationUser: data?.location
-            };
+          const locationRoom = `room-${data.location}`;
+          const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
+          console.log(locationRoom, tableNumberlocationRoom,'tableNumberlocationRoomhhhh' );
+          // var thoiGianHienTai = new Date()
+          //  let responseEmployee = { 
+          //     message: `Có một thông báo mới từ bàn số ${data.tableNumber}`, 
+          //     dateTime: thoiGianHienTai,
+          //     locationUser: data?.location
+          //   };
             // let response = { message:'Món của bạn đã đặt thành công', dateTime: thoiGianHienTai};
             // await addNotificationDataByUserRole(data, `Có một thông báo mới từ bàn số ${data.tableNumber}`)
             await addNotificationData(data,`Đang chờ nhân viên xác nhận`)
            let result = await getNotificationDataBySocket(data?.location)
-            io.to('room').emit('response', 'Đang chờ nhân viên xác nhận');
-            io.to('room').emit('responseEmployee', result);
+            io.to(tableNumberlocationRoom).emit('response', 'Đang chờ nhân viên xác nhận');
+            io.to(tableNumberlocationRoom).emit('responseEmployee', result);
           
         });
         socket.on('getAllOrderByStatus', async(data) => {
           const {tableNumber, location} = data
-          console.log(data,'status');
+          const roomName = `room-${tableNumber}-${location}`;
           let result = await getAllOrderByLocationSocket(tableNumber, location)
-          io.to('room').emit('resAllOrderByStatus', result);
+          io.to(roomName).emit('resAllOrderByStatus', result);
         })
         socket.on('getProductOrder', async(data) => {
           let result = await getAllByLocationSocket(data)
@@ -59,16 +67,7 @@ const init = (server) => {
         // disconnected 
         socket.on('disconnect', () => {
             console.log('A client disconnected');
-        });
-        // Thêm sự kiện để gửi và nhận tin nhắn chat trong phòng
-        socket.on('chatMessage', (messageData) => {
-          // Lấy thông tin người gửi và tin nhắn
-          const {  text } = messageData;
-          console.log(messageData,'messageData');
-          // Gửi tin nhắn đến tất cả các người dùng trong phòng
-          io.to('room').emit('message', { text});
-      });
-        socket.join('room');
+        });   
       });
 };
 
