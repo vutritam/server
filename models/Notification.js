@@ -18,7 +18,7 @@ const { Schema } = mongoose;
 const notifiSchema = new mongoose.Schema({
     tableNumber: {
         type: Number,
-        default: 0
+        default: null
     },
     dateTime:{
         type: Date,

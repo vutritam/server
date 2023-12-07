@@ -43,11 +43,11 @@ const getNotificationDataByUserRole = async(req, res)=>{
   if(isPage === 'admin_page') {
     getNotiByUser =  await NotiModel.find({ isPage:'admin_page'}).sort({ dateTime: -1 }).populate('productId').populate('userId').populate('workShiftId').exec()
   }else {
-    getNotiByUser =  await NotiModel.find({ location: location}).sort({ dateTime: -1 }).populate('productId').exec()
+    getNotiByUser =  await NotiModel.find({ location: location, isPage:{ $ne: 'admin_page' } }).sort({ dateTime: -1 }).populate('productId').exec()
   //let arr =[]
   }
   // console.log(getNotiByUser,'getNotiByUser');
-  if(getNotiByUser){
+  if(getNotiByUser.length > 0){
     return res.json({ message: `Get notification success`, status: 200, data: getNotiByUser, success: true });
   }
   // Send accessToken containing username and roles
@@ -68,10 +68,8 @@ const addNotificationDataByUserRole = async (dataMessage, message) => {
   }
   const data = await NotiModel.create(dataMsg)
   let getNotiByUser
-  if(isPage === 'admin_page' || userId !== null) {
+  if(isPage === 'admin_page' && !!workShiftId || userId !== null) {
     getNotiByUser =  await NotiModel.find({isPage: 'admin_page'}).sort({ dateTime: -1 }).populate('productId').populate('workShiftId').populate('userId').exec()
-  }else {
-    getNotiByUser =  await NotiModel.find().sort({ dateTime: -1 }).populate('productId').populate('workShiftId').populate('userId').exec()
   }
   
   if (data) { //created 
