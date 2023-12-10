@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler')
 
 // /order/getProductByLocationEmployee/1 
 
+
 const getAllOrder = asyncHandler(async(req, res)=>{
     const getAllProductOrder = await Order.find().populate('productId').exec()
     if(getAllProductOrder){
@@ -35,7 +36,7 @@ const getAllByLocationSocket = asyncHandler(async(data)=>{
     const getProductByLocationEmployee = await Order.find({ location: location,  status: { $ne: 'order_deleted' } }).sort({date: -1}).populate('productId').exec()
     // console.log(getProductByLocationEmployee,'getProductByLocationEmployee');
     if(getProductByLocationEmployee){
-       let data = { message: `get product success`, success: true, data: getProductByLocationEmployee}
+       let data =  getProductByLocationEmployee
        return data
     }
     return 'Invalid data received'
@@ -54,15 +55,17 @@ const getAllOrderByNumberTable = async(req, res)=>{
 const getAllOrderByNumberTableAndLocationUser = async(req, res)=>{
     const { tableNumber, location } = req.body
     const getProductByTable = await Order.find({ tableNumber: tableNumber, location: location }).populate('productId').exec()
-    // console.log(tableNumber,'tableNumber');
-    if(getProductByTable){
+    console.log(getProductByTable,'getProductByTable');
+    if(getProductByTable.length>0){
         return res.json({ message: `Get all success`, status: 200, data: getProductByTable, success: true } )
+    }else {
+        return res.json({ message: `Get all failure`, status: 400, data: [], success: false } )
+
     }
-    return res.json({ message: `Get all failure`, status: 400, data: [], success: false } )
 }
 const getAllOrderByUser = async(req, res)=>{
     const getAllOrderByUser = await Order.find().populate('productId').sort({date: -1}).exec()
-    if(getAllOrderByUser){
+    if(getAllOrderByUser.length > 0){
         return res.status(200).json({ message: `Get all success`, status: 200, data: getAllOrderByUser, success: true } )
     }
     return res.status(400).json({ message: `Get all failure`, status: 400, data: [], success: false } )
@@ -73,13 +76,13 @@ const getProductsByRole =async(req, res) =>{
     switch (userRole) {
         case 'admin':
             let getDataAdmin = await Order.find().populate('productId').sort({date: -1}).exec()
-            if(getDataAdmin){
+            if(getDataAdmin.length > 0){
                 return res.status(200).json({ message: `Get all success`, status: 200, data: getDataAdmin, success: true } )
             }
             return res.status(400).json({ message: `Not found item`, status: 400, data: [], success: false } )
         case 'client':
             let getDataEmployee = await Order.find({ location: location, status: { $ne: 'order_deleted' } }).populate('productId').sort({date: -1}).exec()
-            if(getDataEmployee){
+            if(getDataEmployee.length >0 ){
                 return res.status(200).json({ message: `Get all success`, status: 200, data: getDataEmployee, success: true } )
             }
             return res.status(400).json({ message: `Not found item`, status: 400, data: [], success: false } )
@@ -98,7 +101,6 @@ const deleteOrder = async(req, res)=>{
          ,
          { new: true } // Option để trả về bản ghi đã cập nhật
        );
-       console.log("delete", deleteItem)
     
     const getOrderAfterDelete = await Order.find({ location: location, status: { $ne: 'order_deleted' } }).populate('productId').exec()
     if(deleteItem){
@@ -108,9 +110,10 @@ const deleteOrder = async(req, res)=>{
 }
 
 const getAllOrderByLocationSocket=async(tableNumber,location )=>{
+    console.log(tableNumber,location , 'tableNumber,location ');
     const getProductByTable = await Order.find({ tableNumber: tableNumber, location: location }).populate('productId').exec()
     // console.log(tableNumber,'tableNumber');
-    if(getProductByTable){
+    if(getProductByTable.length > 0){
         return getProductByTable
     }
     return getProductByTable
@@ -152,9 +155,8 @@ const handleUpdateStatusOrder = async(req, res) =>{
 }
 
 
-const createNewOrder = async (req, res) => {
-    const { tableNumber, productId, location, quantity, description, status } = req.body;
-
+const createNewOrder = async (data) => {
+    const { tableNumber, productId, location, quantity, description, status } = data;
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({ tableNumber, productId, status: { $ne: 'order_success' } }).exec();
     if (existingOrder) {
@@ -164,16 +166,16 @@ const createNewOrder = async (req, res) => {
             existingOrder.quantity += quantity;
             await existingOrder.save();
 
-            return res.json({ message: 'Order quantity updated', status: 200, data: existingOrder, success: true });
+            return  existingOrder
         } else {
             const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
             const orderUser = await Order.create(objectOrder);
             if(orderUser) {
-                return res.json({ message: 'New order created', status: 200, data: orderUser, success: true });
+                return  orderUser
 
             }
             // Nếu status là "order_success", trả về thông báo lỗi
-            return res.json({ message: 'Cannot update order quantity, order already marked as order_success', status: 400, data: [], success: false });
+            return []
         }
     } else {
         // Nếu không tồn tại, tạo mới đơn hàng mới
@@ -181,11 +183,10 @@ const createNewOrder = async (req, res) => {
             const objectOrder = { tableNumber, quantity, description, productId, location, status, ...req.body };
             const orderUser = await Order.create(objectOrder);
 
-            return res.json({ message: 'New order created', status: 200, data: orderUser, success: true });
+            return  orderUser
         } else {
-            console.log('vào Cannot create new order, status is "order_success"');
             // Nếu status là "order_success", trả về thông báo lỗi
-            return res.json({ message: 'Cannot create new order, status is "order_success"', status: 400, data: [], success: false });
+            return []
         }
     }
 };

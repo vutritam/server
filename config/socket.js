@@ -8,6 +8,7 @@ const {
 const {
   getAllByLocationSocket,
   getAllOrderByLocationSocket,
+  createNewOrder,
 } = require("../controllers/orderController");
 const { getWorkShiftByTime } = require("../controllers/workShifltController");
 
@@ -32,31 +33,37 @@ const init = (server) => {
 
     socket.on("myEvent", async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
-      await addNotificationData(data, `Đang chờ nhân viên xác nhận`);
-      let result = await getNotificationDataBySocket(data?.location);
-      io.to(tableNumberlocationRoom).emit(
-        "response",
-        "Đang chờ nhân viên xác nhận"
+      const locationRoom = `room-${data?.location}`;
+      await createNewOrder(data);
+      let result = await getAllOrderByLocationSocket(
+        data.tableNumber,
+        data?.location
       );
-      io.to(tableNumberlocationRoom).emit("responseEmployee", result);
+      let resultEmployee = await getAllByLocationSocket(data);
+      io.to(tableNumberlocationRoom).emit("response", result);
+      io.to(locationRoom).emit("responseEmployee", resultEmployee);
     });
     socket.on("getAllOrderByStatus", async (data) => {
       const { tableNumber, location } = data;
       const roomName = `room-${tableNumber}-${location}`;
+      const locationRoom = `room-${data?.location}`;
       let result = await getAllOrderByLocationSocket(tableNumber, location);
+      let resultEmployee = await getAllByLocationSocket(data);
       io.to(roomName).emit("resAllOrderByStatus", result);
+      io.to(locationRoom).emit("responseEmployee", resultEmployee);
     });
     socket.on("getProductOrder", async (data) => {
+      const locationRoom = `room-${data?.location}`;
       let result = await getAllByLocationSocket(data);
-      io.to("room").emit("resProductOrder", result);
+      io.to(locationRoom).emit("resProductOrder", result);
     });
-    socket.on("getItemNotification", async (data) => {
-      let result = await updateRecordConfirmOrderNotification(
-        data.idItem,
-        data
-      );
-      io.to("room").emit("resAllItemNotification", result);
-    });
+    // socket.on("getItemNotification", async (data) => {
+    //   let result = await updateRecordConfirmOrderNotification(
+    //     data.idItem,
+    //     data
+    //   );
+    //   io.to("room").emit("resAllItemNotification", result);
+    // });
     socket.on("afterUserLogin", async (data) => {
       // data : userId: 123123123123, workShiftId: 2432423423, thời gian đăng nhập: 12:30, is_Page: 'user_login_workshift'
       // lấy tất cả các ca làm việc theo thời gian
