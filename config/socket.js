@@ -34,14 +34,19 @@ const init = (server) => {
     socket.on("myEvent", async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
       const locationRoom = `room-${data?.location}`;
-      await createNewOrder(data);
-      let result = await getAllOrderByLocationSocket(
-        data.tableNumber,
-        data?.location
-      );
-      let resultEmployee = await getAllByLocationSocket(data);
-      io.to(tableNumberlocationRoom).emit("response", result);
-      io.to(locationRoom).emit("responseEmployee", resultEmployee);
+
+      let newData= await createNewOrder(data);
+    
+      if(newData){
+        let result = await getAllOrderByLocationSocket(
+          data.tableNumber,
+          data?.location
+        );
+        let resultEmployee = await getAllByLocationSocket(data);
+        io.to(tableNumberlocationRoom).emit("response", result);
+        io.to(locationRoom).emit("responseEmployee", resultEmployee);
+      }
+      
     });
     socket.on("getAllOrderByStatus", async (data) => {
       const { tableNumber, location } = data;

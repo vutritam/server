@@ -43,8 +43,8 @@ const getAllByLocationSocket = asyncHandler(async(data)=>{
 })
 
 const getAllOrderByNumberTable = async(req, res)=>{
-    const { tableNumber } = req.body
-    const getProductByTable = await Order.find({ tableNumber: tableNumber }).populate('productId').exec()
+    const { tableNumber, location } = req.body
+    const getProductByTable = await Order.find({ tableNumber: tableNumber, location: location }).populate('productId').exec()
     // console.log(tableNumber,'tableNumber');
     if(getProductByTable){
         return res.json({ message: `Get all success`, status: 200, data: getProductByTable, success: true } )
@@ -55,7 +55,6 @@ const getAllOrderByNumberTable = async(req, res)=>{
 const getAllOrderByNumberTableAndLocationUser = async(req, res)=>{
     const { tableNumber, location } = req.body
     const getProductByTable = await Order.find({ tableNumber: tableNumber, location: location }).populate('productId').exec()
-    console.log(getProductByTable,'getProductByTable');
     if(getProductByTable.length>0){
         return res.json({ message: `Get all success`, status: 200, data: getProductByTable, success: true } )
     }else {
@@ -158,7 +157,7 @@ const handleUpdateStatusOrder = async(req, res) =>{
 const createNewOrder = async (data) => {
     const { tableNumber, productId, location, quantity, description, status } = data;
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
-    const existingOrder = await Order.findOne({ tableNumber, productId, status: { $ne: 'order_success' } }).exec();
+    const existingOrder = await Order.findOne({ tableNumber, productId, location, status: { $ne: 'order_success' } }).exec();
     if (existingOrder) {
         // Nếu đã tồn tại
         if (existingOrder.status !== 'order_success') {
