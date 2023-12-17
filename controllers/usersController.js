@@ -38,7 +38,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @access Private
 const createNewUser = asyncHandler(async (req, res) => {
     const { username, password, location} = req.body
-    console.log(req.body,'hhhh');
     // Confirm data
     if (!username || !password || !location) {
         return res.status(400).json({ message: 'All fields are required', status: 400, data:[], success:false  })
@@ -55,7 +54,6 @@ const createNewUser = asyncHandler(async (req, res) => {
     const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
 
     const userObject = { username, location, password: hashedPwd }
-    console.log(userObject,'userObject');
     // Create and store new user 
     const user = await User.create(userObject)
 
