@@ -2,17 +2,17 @@ const express = require("express");
 const router = express.Router();
 const orderController = require("../controllers/orderController");
 
-router.route("/getAllByLocationSocket").post(orderController.getAllByLocationSocket);
-router.route("/createOrder").post(orderController.createNewOrder);
-router.route("/getAll").get(orderController.getAllOrder);
-router.route("/getAllOrderByUser").get(orderController.getAllOrderByUser);
-router.route("/getAllOrderByLocation").post(orderController.getAllOrderByLocation);
-router.route("/getAllOrderByNumberTable").post(orderController.getAllOrderByNumberTable);
-router.route("/getAllOrderByNumberTableAndLocationUser").post(orderController.getAllOrderByNumberTableAndLocationUser);
-router.route("/deleteOrder").post(orderController.deleteOrder);
-router.route("/deleteAllOrder").post(orderController.handleDeleteAllOrder);
-router.route("/update/status/:id").post(orderController.handleUpdateStatusOrder);
-router.route("/getAllOrderByUserRole").post(orderController.getProductsByRole);
+router.route("/getAllByLocationSocket").post(orderController.getAllByLocationSocketController);
+router.route("/createOrder").post(orderController.createNewOrderController);
+router.route("/getAll").get(orderController.getAllOrderController);
+router.route("/getAllOrderByUser").get(orderController.getAllOrderByUserController);
+router.route("/getAllOrderByLocation").post(orderController.getAllOrderByLocationController);
+router.route("/getAllOrderByNumberTable").post(orderController.getAllOrderByNumberTableController);
+router.route("/getAllOrderByNumberTableAndLocationUser").post(orderController.getAllOrderByNumberTableAndLocationUserController);
+router.route("/deleteOrder").post(orderController.deleteOrderController);
+router.route("/deleteAllOrder").post(orderController.handleDeleteAllOrderController);
+router.route("/update/status/:id").post(orderController.handleUpdateStatusOrderController);
+router.route("/getAllOrderByUserRole").post(orderController.getProductsByRoleController);
 
 module.exports = router
 

@@ -1,75 +1,67 @@
 const socketIO = require("socket.io");
 const {
-  addNotificationData,
-  addNotificationDataByUserRole,
-  updateRecordConfirmOrderNotification,
-  getNotificationDataBySocket,
+  addNotificationDataByUserRole
 } = require("../controllers/notifiController");
 const {
-  getAllByLocationSocket,
-  getAllOrderByLocationSocket,
-  createNewOrder,
+  getAllByLocationSocketController,
+  getAllOrderByLocationSocketController,
+  createNewOrderController,
 } = require("../controllers/orderController");
 const { getWorkShiftByTime } = require("../controllers/workShifltController");
+const { ResponseType } = require("../constants/constantEnum");
 
 let io;
 
 // Hàm khởi tạo Socket.IO và lắng nghe kết nối
 const init = (server) => {
   // handle cors
+  const CLIENT_PORT = process.env.ENV_CLIENT_CONNECT
   const io = socketIO(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: CLIENT_PORT,
       methods: ["GET", "POST"],
     },
   });
 
   // connected
-  io.on("connection", (socket) => {
-    socket.on("joinRoom", (roomName) => {
+  io.on(ResponseType.Connection, (socket) => {
+    socket.on(ResponseType.JoinRoom, (roomName) => {
       socket.join(roomName);
       console.log("Joined room:", roomName);
     });
 
-    socket.on("myEvent", async (data) => {
+    socket.on(ResponseType.MyEvent, async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
       const locationRoom = `room-${data?.location}`;
 
-      let newData= await createNewOrder(data);
+      let newData= await createNewOrderController(data);
     
       if(newData){
-        let result = await getAllOrderByLocationSocket(
+        let result = await getAllOrderByLocationSocketController(
           data.tableNumber,
           data?.location
         );
-        let resultEmployee = await getAllByLocationSocket(data);
-        io.to(tableNumberlocationRoom).emit("response", result);
-        io.to(locationRoom).emit("responseEmployee", resultEmployee);
+        let resultEmployee = await getAllByLocationSocketController(data);
+        io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, result);
+        io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
       }
       
     });
-    socket.on("getAllOrderByStatus", async (data) => {
+    socket.on(ResponseType.GetAllOrderByStatus, async (data) => {
       const { tableNumber, location } = data;
       const roomName = `room-${tableNumber}-${location}`;
       const locationRoom = `room-${data?.location}`;
-      let result = await getAllOrderByLocationSocket(tableNumber, location);
-      let resultEmployee = await getAllByLocationSocket(data);
-      io.to(roomName).emit("resAllOrderByStatus", result);
-      io.to(locationRoom).emit("responseEmployee", resultEmployee);
+      let result = await getAllOrderByLocationSocketController(tableNumber, location);
+      let resultEmployee = await getAllByLocationSocketController(data);
+      io.to(roomName).emit(ResponseType.ResponseOrderStatus, result);
+      io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
     });
-    socket.on("getProductOrder", async (data) => {
+    socket.on(ResponseType.GetProductOrder, async (data) => {
       const locationRoom = `room-${data?.location}`;
-      let result = await getAllByLocationSocket(data);
-      io.to(locationRoom).emit("resProductOrder", result);
+      let result = await getAllByLocationSocketController(data);
+      io.to(locationRoom).emit(ResponseType.ResProductOrder, result);
     });
-    // socket.on("getItemNotification", async (data) => {
-    //   let result = await updateRecordConfirmOrderNotification(
-    //     data.idItem,
-    //     data
-    //   );
-    //   io.to("room").emit("resAllItemNotification", result);
-    // });
-    socket.on("afterUserLogin", async (data) => {
+    socket.on(ResponseType.AfterUserLogin, async (data) => {
       // data : userId: 123123123123, workShiftId: 2432423423, thời gian đăng nhập: 12:30, is_Page: 'user_login_workshift'
       // lấy tất cả các ca làm việc theo thời gian
       let resultAllWorkShift = await getWorkShiftByTime(data?.time); // { id, name: ca, starttime, endtime }
@@ -78,11 +70,11 @@ const init = (server) => {
           { ...data, workShiftId: resultAllWorkShift.id },
           "Có một thông báo mới"
         );
-        io.to("room").emit("ResponseAfterUserLogin", newNoti.data);
+        io.to(ResponseType.Room).emit(ResponseType.ResponseAfterUserLogin, newNoti.data);
       }
     });
     // disconnected
-    socket.on("disconnect", () => {
+    socket.on(ResponseType.Disconnect, () => {
       console.log("A client disconnected");
     });
   });

@@ -1,144 +1,178 @@
-const User = require('../models/User')
-const Note = require('../models/Note')
+
 const asyncHandler = require('express-async-handler')
-const bcrypt = require('bcrypt')
+const userServices = require('../services/userServices')
 
 
+const getUserByIdController = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await userServices.getUserByIdServices({ id });
 
+        if (user) {
+            return res.status(200).json({ success: true, data: user });
+        }
 
-const getUserById = asyncHandler(async(req, res)=>{
-    const { id } = req.params
-    const user = await User.findById(id).select('-password').exec()
-    if(user){
-       return res.status(200).json({ success:true, data: user })
+        return res.status(400).json({ message: 'Invalid user data received' });
+    } catch (error) {
+        // Xử lý exception từ service
+        console.error('Error in getUserByIdController:', error);
+
+        // Trả về phản hồi lỗi chung
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: []
+        });
     }
-    return res.status(400).json({ message: 'Invalid user data received' })
+});
 
-    // console.log(user)
+const getAllUsersController = asyncHandler(async (req, res) => {
+    try {
+        // Get all users from MongoDB
+        const users = await userServices.getAllUsersServices();
 
-})
+        // If no users
+        if (!users?.length) {
+            return res.status(400).json({ message: 'No users found' });
+        }
 
-// @desc Get all users
-// @route GET /users
-// @access Private
-const getAllUsers = asyncHandler(async (req, res) => {
-    // Get all users from MongoDB
-    const users = await User.find().select('-password').lean()
+        res.json(users);
+    } catch (error) {
+        // Xử lý exception từ service
+        console.error('Error in getAllUsersController:', error);
 
-    // If no users 
-    if (!users?.length) {
-        return res.status(400).json({ message: 'No users found' })
+        // Trả về phản hồi lỗi chung
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: []
+        });
     }
+});
 
-    res.json(users)
-})
 
 // @desc Create new user
 // @route POST /users
 // @access Private
-const createNewUser = asyncHandler(async (req, res) => {
-    const { username, password, location} = req.body
-    // Confirm data
-    if (!username || !password || !location) {
-        return res.status(400).json({ message: 'All fields are required', status: 400, data:[], success:false  })
+const createNewUserController = asyncHandler(async (req, res) => {
+    try {
+        // Gọi service để tạo người dùng mới
+        const result = await userServices.createNewUserServices(req.body);
+
+        // Kiểm tra kết quả từ service
+        if (result.success) {
+            // Nếu thành công, trả về phản hồi thành công
+            res.status(result.status).json({
+                success: true,
+                message: result.message,
+                data: result.data
+            });
+        } else {
+            // Nếu có lỗi, trả về phản hồi lỗi
+            res.status(result.status).json({
+                success: false,
+                message: result.message,
+                data: result.data
+            });
+        }
+    } catch (error) {
+        // Xử lý exception từ service
+        if(error) {
+            res.status(error.code).json({
+                success: false,
+                message: error.name,
+                data: []
+            });
+        }
+        // Trả về phản hồi lỗi chung
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: []
+        });
     }
+});
 
-    // Check for duplicate username
-    const duplicate = await User.findOne({ username }).lean().exec()
-
-    if (duplicate) {
-        return res.json({ message: 'username was existed', status: 400, data:[], success:false })
-    }
-
-    // Hash password 
-    const hashedPwd = await bcrypt.hash(password, 10) // salt rounds
-
-    const userObject = { username, location, password: hashedPwd }
-    // Create and store new user 
-    const user = await User.create(userObject)
-
-    if (user) { //created 
-        res.json({ message: `New user ${username} created`, status: 200, data:[], success: true } )
-    } else {
-        res.json({ message: 'Invalid user data received', status: 400, data:[], success:false })
-    }
-})
 
 // @desc Update a user
 // @route PATCH /users
 // @access Private
-const updateUser = asyncHandler(async (req, res) => {
-    const { id, username, roles, active, password } = req.body
+const updateUserController = asyncHandler(async (req, res) => {
+    try {
+        // Gọi service để cập nhật thông tin người dùng
+        const result = await userServices.updateUserServices(req.body);
 
-    // Confirm data 
-    if (!id || !username || !Array.isArray(roles) || !roles.length || typeof active !== 'boolean') {
-        return res.status(400).json({ message: 'All fields except password are required' })
+        // Kiểm tra kết quả từ service
+        if (result.success) {
+            // Nếu thành công, trả về phản hồi thành công
+            res.status(result.status).json({
+                success: true,
+                message: result.message,
+                data: result.data
+            });
+        } else {
+            // Nếu có lỗi, trả về phản hồi lỗi
+            res.status(result.status).json({
+                success: false,
+                message: result.message,
+                data: result.data
+            });
+        }
+    } catch (error) {
+        // Xử lý exception từ service
+        console.error('Error in updateUserController:', error);
+
+        // Trả về phản hồi lỗi chung
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: []
+        });
     }
+});
 
-    // Does the user exist to update?
-    const user = await User.findById(id).exec()
-
-    if (!user) {
-        return res.status(400).json({ message: 'User not found' })
-    }
-
-    // Check for duplicate 
-    const duplicate = await User.findOne({ username }).lean().exec()
-
-    // Allow updates to the original user 
-    if (duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({ message: 'Duplicate username' })
-    }
-
-    user.username = username
-    user.roles = roles
-    user.active = active
-
-    if (password) {
-        // Hash password 
-        user.password = await bcrypt.hash(password, 10) // salt rounds 
-    }
-
-    const updatedUser = await user.save()
-
-    res.json({ message: `${updatedUser.username} updated` })
-})
 
 // @desc Delete a user
 // @route DELETE /users
 // @access Private
-const deleteUser = asyncHandler(async (req, res) => {
-    const { id } = req.body
+const deleteUserController = asyncHandler(async (req, res) => {
+    try {
+        // Gọi service để xóa người dùng
+        const result = await userServices.deleteUserServices(req.body);
 
-    // Confirm data
-    if (!id) {
-        return res.status(400).json({ message: 'User ID Required' })
+        // Kiểm tra kết quả từ service
+        if (result.success) {
+            // Nếu thành công, trả về phản hồi thành công
+            res.status(result.status).json({
+                success: true,
+                message: result.message,
+                data: result.data
+            });
+        } else {
+            // Nếu có lỗi, trả về phản hồi lỗi
+            res.status(result.status).json({
+                success: false,
+                message: result.message,
+                data: result.data
+            });
+        }
+    } catch (error) {
+        // Xử lý exception từ service
+        console.error('Error in deleteUserController:', error);
+
+        // Trả về phản hồi lỗi chung
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: []
+        });
     }
-
-    // Does the user still have assigned notes?
-    const note = await Note.findOne({ user: id }).lean().exec()
-    if (note) {
-        return res.status(400).json({ message: 'User has assigned notes' })
-    }
-
-    // Does the user exist to delete?
-    const user = await User.findById(id).exec()
-
-    if (!user) {
-        return res.status(400).json({ message: 'User not found' })
-    }
-
-    const result = await user.deleteOne()
-
-    const reply = `Username ${result.username} with ID ${result._id} deleted`
-
-    res.json(reply)
-})
+});
 
 module.exports = {
-    getAllUsers,
-    createNewUser,
-    updateUser,
-    deleteUser,
-    getUserById
+    getAllUsersController,
+    createNewUserController,
+    updateUserController,
+    deleteUserController,
+    getUserByIdController
 }

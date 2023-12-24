@@ -1,0 +1,20 @@
+const ResponseType = {
+    ResponseEmployee: "responseEmployee",
+    ResponseUserOrder: "response",
+    ResponseOrderStatus: "resAllOrderByStatus",
+    GetAllOrderByStatus: "getAllOrderByStatus",
+    GetProductOrder: "getProductOrder",
+    ResProductOrder: "resProductOrder",
+    AfterUserLogin: "afterUserLogin",
+    ResponseAfterUserLogin: "ResponseAfterUserLogin",
+    Disconnect: "disconnect",
+    Connection: "connection",
+    MyEvent: "myEvent",
+    JoinRoom: "joinRoom",
+    Room: "room",
+    // Thêm các chuỗi cố định khác nếu cần
+  };
+  
+module.exports = {
+    ResponseType,
+};
