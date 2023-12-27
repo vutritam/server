@@ -18,6 +18,7 @@ const loginServices = async (authData) => {
     if (!foundUser || !foundUser.active) {
       throw new AuthenticationError(
         "Không tìm thấy tên tài khoản hoặc (không có quyền truy cập)",
+        'username',
         401
       );
     }
@@ -25,7 +26,7 @@ const loginServices = async (authData) => {
     const match = await bcrypt.compare(password, foundUser.password);
 
     if (!match) {
-      throw new AuthenticationError("Mật khẩu sai", 400);
+      throw new AuthenticationError("Mật khẩu sai",'password', 400);
     }
 
     const accessToken = jwt.sign(

@@ -17,6 +17,7 @@ const loginController = async (req, res) => {
       return res.json({
         success: false,
         statusCode: error.code,
+        fieldError: error.fieldError,
         message: error.message,
         data: [],
       });

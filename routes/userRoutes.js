@@ -5,7 +5,7 @@ const usersController = require("../controllers/usersController");
 // const verifyJWT = require('../middleware/verifyJWT')
 // router.use(verifyJWT)
 router.route("/").get(usersController.getAllUsersController);
-router.route("/").post(usersController.createNewUserController);
+router.route("/add").post(usersController.createNewUserController);
 router.route("/").patch(usersController.updateUserController);
 router.route("/").delete(usersController.deleteUserController);
 router.route("/:id").post(usersController.getUserByIdController);

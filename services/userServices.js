@@ -5,21 +5,17 @@ const bcrypt = require("bcrypt");
 const AuthenticationError = require("../config/authenticationError");
 
 const getUserByIdServices = async (userData) => {
-  const { id } = userData;
-
   try {
     // Logic để lấy danh sách người dùng từ database
-    const userServices = await User.findById(id).select("-password").exec();
+    const userServices = await User.findById(userData).select("-password").exec();
     if (userServices) {
       return userServices;
     }
+    throw new AuthenticationError("Không tìm thấy user nào", 400);
   } catch (error) {
     // Handle specific exceptions
-    if (error.name === "CastError") {
-      throw new AuthenticationError("Invalid user ID format", 400);
-    } else {
-      throw new AuthenticationError("Error retrieving user data", 500);
-    }
+    console.log(error,'error getUserByIdServices');
+   throw error
   }
 };
 
@@ -27,12 +23,13 @@ const getAllUsersServices = async () => {
   try {
     // Logic để lấy danh sách người dùng từ database
     const userServices = await User.find().select("-password").lean();
-    if (!userServices?.length) {
+    if (userServices?.length > 0) {
       return userServices;
     }
+    throw new AuthenticationError("Không tìm thấy user nào", 400);
   } catch (error) {
     // Handle specific exceptions
-    throw new AuthenticationError("Error retrieving user data", 500);
+    throw error
   }
 };
 
@@ -47,18 +44,12 @@ const createNewUserServices = async (userData) => {
     if (!username || !password || !location) {
       throw new AuthenticationError("All fields are required", 400);
     }
-
-    // Check if userServices is empty
-    // Note: This check seems unrelated to user creation, you might want to revisit its purpose
-    if (!userServices?.length) {
-      throw new AuthenticationError("userServices is empty", 400);
-    }
-
+    
     // Check for duplicate username
     const duplicate = await User.findOne({ username }).lean().exec();
 
     if (duplicate) {
-      throw new AuthenticationError("Username already exists", 400);
+      throw new AuthenticationError("Username already exists",'username', 400);
     }
 
     // Hash password
@@ -79,22 +70,9 @@ const createNewUserServices = async (userData) => {
       throw new AuthenticationError("Invalid user data received", 400);
     }
   } catch (error) {
+    console.log(error,'eror');
     // Handle other exceptions
-    if (error.name === "AuthenticationError") {
-      return {
-        success: false,
-        message: error.message,
-        status: error.code,
-        data: [],
-      };
-    } else {
-      return {
-        success: false,
-        message: "Internal Server Error",
-        status: 500,
-        data: [],
-      };
-    }
+    throw error
   }
 };
 
