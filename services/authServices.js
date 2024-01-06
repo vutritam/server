@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const l10n = require("../L10N/en.json");
 const AuthenticationError = require("../config/authenticationError");
 // @desc Login
 // @route POST /auth
@@ -10,14 +11,14 @@ const loginServices = async (authData) => {
   try {
     // Logic để lấy danh sách người dùng từ database
     if (!username || !password) {
-      throw new AuthenticationError("Vui lòng điền đầy đủ thông tin", 400);
+      throw new AuthenticationError(l10n['authService.loginServices.AuthenticationError'], 400);
     }
 
     const foundUser = await User.findOne({ username }).exec();
 
     if (!foundUser || !foundUser.active) {
       throw new AuthenticationError(
-        "Không tìm thấy tên tài khoản hoặc (không có quyền truy cập)",
+        l10n['authService.loginServices.foundUser.AuthenticationError'],
         'username',
         401
       );
@@ -26,7 +27,7 @@ const loginServices = async (authData) => {
     const match = await bcrypt.compare(password, foundUser.password);
 
     if (!match) {
-      throw new AuthenticationError("Mật khẩu sai",'password', 400);
+      throw new AuthenticationError(l10n['authService.loginServices.foundUser.password'],'password', 400);
     }
 
     const accessToken = jwt.sign(
@@ -48,7 +49,7 @@ const loginServices = async (authData) => {
         roles: foundUser.roles,
       },
       success: true,
-      message: "Đăng nhập thành công",
+      message: l10n['authService.loginServices.login.success'],
     };
   } catch (error) {
     // Handle specific exceptions

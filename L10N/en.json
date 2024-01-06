@@ -1,0 +1,8 @@
+{
+    "authService.loginServices.AuthenticationError": "Vui lòng điền đầy đủ thông tin",
+    "authService.loginServices.foundUser.AuthenticationError":    "Không tìm thấy tên tài khoản hoặc (không có quyền truy cập)",
+    "authService.loginServices.foundUser.password":    "Mật khẩu sai",
+    "authService.loginServices.login.success":    "Đăng nhập thành công",
+    "socket.message.HasNotification": "Có một thông báo mới"
+
+}

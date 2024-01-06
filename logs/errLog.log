@@ -1,0 +1,2 @@
+20231224	13:32:38	b01da021-ff17-462b-8bae-32ed27873493	RangeError: Invalid status code: undefined	POST	/users	http://localhost:3000
+20231224	13:35:40	3172d298-246b-4d6f-8c39-17f7410b98d5	ReferenceError: AuthenticationError is not defined	POST	/users	http://localhost:3000

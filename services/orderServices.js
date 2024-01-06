@@ -58,7 +58,6 @@ const getAllByLocationSocketServices = asyncHandler(async (data) => {
     const { location } = data;
     const getProductByLocationEmployee = await Order.find({
       location: location,
-      status: { $ne: "order_deleted" },
     })
       .sort({ date: -1 })
       .populate("productId")
@@ -159,7 +158,7 @@ const getProductsByRoleServices = async (orderData) => {
         }
         throw new AuthenticationError("Không tìm thấy order nào", 400);
 
-      case "client":
+      case "employee":
         let getDataEmployee = await Order.find({
           location: location,
           status: { $ne: "order_deleted" },
@@ -268,6 +267,7 @@ const createNewOrderServices = async (orderData) => {
   try {
     const { tableNumber, productId, location, quantity, description, status } =
       orderData;
+      console.log(orderData,'description');
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({
       tableNumber,

@@ -110,6 +110,46 @@ console.log(req.body,'res');
           }
     }
 });
+const createNewAdminController = asyncHandler(async (req, res) => {
+    try {
+        // Gọi service để tạo người dùng mới
+
+        const result = await userServices.createNewAdminServices(req.body);
+        // Kiểm tra kết quả từ service
+        if (result.success) {
+            // Nếu thành công, trả về phản hồi thành công
+            res.json({
+                success: true,
+                message: result.message,
+                data: result.data
+            });
+        } else {
+            // Nếu có lỗi, trả về phản hồi lỗi
+            res.status(result.status).json({
+                success: false,
+                message: result.message,
+                data: result.data
+            });
+        }
+    } catch (error) {
+        // Xử lý exception từ service
+        if (error instanceof AuthenticationError) {
+            return res.json({
+              success: false,
+              statusCode: error.code,
+              message: error.message,
+              data: [],
+            });
+          } else {
+            return res.json({
+              success: false,
+              statusCode: error.code,
+              message: 'Internal Server Error',
+              data: [],
+            });
+          }
+    }
+});
 
 
 // @desc Update a user
@@ -207,5 +247,6 @@ module.exports = {
     createNewUserController,
     updateUserController,
     deleteUserController,
-    getUserByIdController
+    getUserByIdController,
+    createNewAdminController
 }

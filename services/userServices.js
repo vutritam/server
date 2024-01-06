@@ -76,6 +76,47 @@ const createNewUserServices = async (userData) => {
   }
 };
 
+
+const createNewAdminServices = async (userData) => {
+  const { username, password } = userData;
+
+  try {
+    // Check for required fields
+    if (!username || !password ) {
+      throw new AuthenticationError("All fields are required", 400);
+    }
+    
+    // Check for duplicate username
+    const duplicate = await User.findOne({ username }).lean().exec();
+
+    if (duplicate) {
+      throw new AuthenticationError("Username already exists",'username', 400);
+    }
+
+    // Hash password
+    const hashedPwd = await bcrypt.hash(password, 10); // salt rounds
+
+    // Create and store new user
+    const userObject = { username, roles: ["admin"], password: hashedPwd };
+    const user = await User.create(userObject);
+
+    if (user) {
+      return {
+        success: true,
+        message: `New user ${username} created`,
+        status: 200,
+        data: [],
+      };
+    } else {
+      throw new AuthenticationError("Invalid user data received", 400);
+    }
+  } catch (error) {
+    console.log(error,'eror');
+    // Handle other exceptions
+    throw error
+  }
+};
+
 // @desc Update a user
 // @route PATCH /users
 // @access Private
@@ -206,4 +247,5 @@ module.exports = {
   deleteUserServices,
   getUserByIdServices,
   getAllUsersServices,
+  createNewAdminServices
 };

@@ -1,12 +1,12 @@
-POST http://localhost:3500/users
+POST http://localhost:3500/users/add/admin
 Content-Type: application/json
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjQxMThkNTdkOWFhYmZhNmM4MzM4ZmMiLCJpYXQiOjE2NDk0NzMwNzl9.MaFbQnCgm3GyXvHV1wgfxzonf0Lc8wFiKp-hiR-dLyo
 
 
 {
-    "username": "vu tri tam",
-    "password": "12345678",
-    "roles": ["Client"]
+    "username": "admin",
+    "password": "12345678"
+   
 }
 
 

@@ -8,6 +8,7 @@ const {
   createNewOrderController,
 } = require("../controllers/orderController");
 const { getWorkShiftByTime } = require("../controllers/workShifltController");
+const l10n = require("../L10N/en.json");
 const { ResponseType } = require("../constants/constantEnum");
 
 let io;
@@ -33,9 +34,7 @@ const init = (server) => {
     socket.on(ResponseType.MyEvent, async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
       const locationRoom = `room-${data?.location}`;
-
       let newData= await createNewOrderController(data);
-    
       if(newData){
         let result = await getAllOrderByLocationSocketController(
           data.tableNumber,
@@ -45,8 +44,8 @@ const init = (server) => {
         io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, result);
         io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
       }
-      
     });
+
     socket.on(ResponseType.GetAllOrderByStatus, async (data) => {
       const { tableNumber, location } = data;
       const roomName = `room-${tableNumber}-${location}`;
@@ -56,11 +55,13 @@ const init = (server) => {
       io.to(roomName).emit(ResponseType.ResponseOrderStatus, result);
       io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
     });
+
     socket.on(ResponseType.GetProductOrder, async (data) => {
       const locationRoom = `room-${data?.location}`;
       let result = await getAllByLocationSocketController(data);
       io.to(locationRoom).emit(ResponseType.ResProductOrder, result);
     });
+
     socket.on(ResponseType.AfterUserLogin, async (data) => {
       // data : userId: 123123123123, workShiftId: 2432423423, thời gian đăng nhập: 12:30, is_Page: 'user_login_workshift'
       // lấy tất cả các ca làm việc theo thời gian
@@ -68,11 +69,12 @@ const init = (server) => {
       if (resultAllWorkShift) {
         let newNoti = await addNotificationDataByUserRole(
           { ...data, workShiftId: resultAllWorkShift.id },
-          "Có một thông báo mới"
+          l10n['socket.message.HasNotification']
         );
         io.to(ResponseType.Room).emit(ResponseType.ResponseAfterUserLogin, newNoti.data);
       }
     });
+
     // disconnected
     socket.on(ResponseType.Disconnect, () => {
       console.log("A client disconnected");
