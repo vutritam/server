@@ -6,11 +6,23 @@ const AuthenticationError = require('../config/authenticationError');
 
 const getUserByIdController = asyncHandler(async (req, res) => {
     try {
-        const user = await userServices.getUserByIdServices(req.params.id);
-
-        if (user) {
-            return res.status(200).json({ success: true, data: user });
-        }
+        const result = await userServices.getUserByIdServices(req.params.id);
+        if (result.success) {
+          // Nếu thành công, trả về phản hồi thành công
+          res.json({
+              success: true,
+              message: result.message,
+              data: result.data
+          });
+      } else {
+          // Nếu có lỗi, trả về phản hồi lỗi
+          res.status(result.status).json({
+              success: false,
+              message: result.message,
+              data: result.data
+          });
+      }
+       
 
         // return res.status(400).json({ message: 'Invalid user data received' });
     } catch (error) {
@@ -34,6 +46,47 @@ const getUserByIdController = asyncHandler(async (req, res) => {
           }
     }
 });
+const updatePasswordUserController = asyncHandler(async (req, res) => {
+    try {
+        const result = await userServices.updatePasswordUserServices(req.body);
+        if (result.success) {
+          // Nếu thành công, trả về phản hồi thành công
+          res.json({
+              success: true,
+              message: result.message,
+              data: result.data
+          });
+      } else {
+          // Nếu có lỗi, trả về phản hồi lỗi
+          res.status(result.status).json({
+              success: false,
+              message: result.message,
+              data: result.data
+          });
+      }
+    } catch (error) {
+        // Xử lý exception từ service
+        console.error('Error in getUserByIdController:', error);
+
+        if (error instanceof AuthenticationError) {
+            return res.json({
+              success: false,
+              fieldError: error.fieldError,
+              statusCode: error.code,
+              message: error.message,
+              data: [],
+            });
+          } else {
+            return res.json({
+              success: false,
+              statusCode: error.code,
+              message: 'Internal Server Error',
+              data: [],
+            });
+          }
+    }
+});
+
 
 const getAllUsersController = asyncHandler(async (req, res) => {
     try {
@@ -72,8 +125,6 @@ const getAllUsersController = asyncHandler(async (req, res) => {
 const createNewUserController = asyncHandler(async (req, res) => {
     try {
         // Gọi service để tạo người dùng mới
-console.log(req.body,'res');
-
         const result = await userServices.createNewUserServices(req.body);
         // Kiểm tra kết quả từ service
         if (result.success) {
@@ -151,6 +202,46 @@ const createNewAdminController = asyncHandler(async (req, res) => {
     }
 });
 
+const updateProfileUserController = async (req, res) => {
+  try {
+      // Gọi service để tạo người dùng mới
+console.log(req,'req.body');
+      const result = await userServices.updateProfileUserServices(req);
+      // Kiểm tra kết quả từ service
+      if (result.success) {
+          // Nếu thành công, trả về phản hồi thành công
+          res.json({
+              success: true,
+              message: result.message,
+              data: result.data
+          });
+      } else {
+          // Nếu có lỗi, trả về phản hồi lỗi
+          res.status(result.status).json({
+              success: false,
+              message: result.message,
+              data: result.data
+          });
+      }
+  } catch (error) {
+      // Xử lý exception từ service
+      if (error instanceof AuthenticationError) {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: error.message,
+            data: [],
+          });
+        } else {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: 'Internal Server Error',
+            data: [],
+          });
+        }
+  }
+};
 
 // @desc Update a user
 // @route PATCH /users
@@ -248,5 +339,7 @@ module.exports = {
     updateUserController,
     deleteUserController,
     getUserByIdController,
-    createNewAdminController
+    createNewAdminController,
+    updateProfileUserController,
+    updatePasswordUserController
 }

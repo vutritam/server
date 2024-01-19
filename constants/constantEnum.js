@@ -7,6 +7,8 @@ const ResponseType = {
     ResProductOrder: "resProductOrder",
     AfterUserLogin: "afterUserLogin",
     ResponseAfterUserLogin: "ResponseAfterUserLogin",
+    RequestChangeLocation: "requestChangeLocation",
+    ResChangeLocation: "resChangeLocation",
     Disconnect: "disconnect",
     Connection: "connection",
     MyEvent: "myEvent",

@@ -7,9 +7,14 @@ const AuthenticationError = require("../config/authenticationError");
 const getUserByIdServices = async (userData) => {
   try {
     // Logic để lấy danh sách người dùng từ database
-    const userServices = await User.findById(userData).select("-password").exec();
+    const userServices = await User.findById(userData).select("-password").populate("userRequestId").exec();
     if (userServices) {
-      return userServices;
+      return {
+        success: true,
+        message: ``,
+        status: 200,
+        data: userServices,
+      };
     }
     throw new AuthenticationError("Không tìm thấy user nào", 400);
   } catch (error) {
@@ -116,6 +121,75 @@ const createNewAdminServices = async (userData) => {
     throw error
   }
 };
+
+const updatePasswordUserServices = async (userData)=>{
+
+  const { _id, password, reNewPassword, newPassword} = userData;
+  try {
+    if (!password || !newPassword) {
+      throw new AuthenticationError('Nhập đầy đủ trước khi cập nhật','password', 400);
+    }
+
+    const foundUser = await User.findOne({ _id: _id }).exec();
+    if(!foundUser) {
+      throw new AuthenticationError('không tìm thấy user', null, 400);
+    }
+    const match = await bcrypt.compare(password, foundUser.password);
+    if (!match) {
+      throw new AuthenticationError('Mật khẩu không đúng','password', 400);
+    }
+    if(reNewPassword !== newPassword){
+      throw new AuthenticationError('Mật khẩu nhập lại không khớp','reNewPassword', 400);
+    }
+    const newPasswordUser = {
+      password :await bcrypt.hash(newPassword, 10),
+    }
+    const userUpdate = await User.findByIdAndUpdate(_id, newPasswordUser, {returnDocument: true}).exec();
+    if(userUpdate) {
+      return {
+        success: true,
+        message: `Cập nhật thành công`,
+        status: 200,
+        data: [],
+      }
+    }
+
+  } catch (error) {
+    console.log(error,'eror');
+    // Handle other exceptions
+    throw error
+  }
+}
+
+const updateProfileUserServices = async (userData)=>{
+
+  try {
+  const { _id, username, email, address} = userData.body
+    const imageName = userData?.file?.originalname || '';
+    const newDataUser = {
+      username,
+      email,
+      file: imageName,
+      address,
+    }
+ 
+    const userUpdate = await User.findByIdAndUpdate(_id, newDataUser, {returnDocument: true}).exec();
+      if(userUpdate) {
+        return {
+          success: true,
+        message: `Cập nhật thành công`,
+        status: 200,
+        data: [],
+        }
+      }
+
+  } catch (error) {
+      console.log(error,'eror');
+      // Handle other exceptions
+      throw error
+  }
+}
+
 
 // @desc Update a user
 // @route PATCH /users
@@ -247,5 +321,7 @@ module.exports = {
   deleteUserServices,
   getUserByIdServices,
   getAllUsersServices,
-  createNewAdminServices
+  createNewAdminServices,
+  updateProfileUserServices,
+  updatePasswordUserServices
 };

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const { Schema } = mongoose;
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: ['employee']
     },
-    infomation:{
+    file:{
         type: String,
         default:'',
     },
@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    userRequestId: { type: Schema.Types.ObjectId, ref: 'UserRequest' },
     createdAt:{
         type: Date,
         default: new Date()

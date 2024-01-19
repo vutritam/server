@@ -1,2 +1,16 @@
 20231224	13:32:38	b01da021-ff17-462b-8bae-32ed27873493	RangeError: Invalid status code: undefined	POST	/users	http://localhost:3000
 20231224	13:35:40	3172d298-246b-4d6f-8c39-17f7410b98d5	ReferenceError: AuthenticationError is not defined	POST	/users	http://localhost:3000
+20240112	15:56:30	c7f8515b-033e-4f6f-9ee6-91c7b225ac70	MulterError: Unexpected field	POST	/users/update/profile	http://localhost:3000
+20240112	15:57:29	c6430ef4-987f-422d-a6be-ba9d00be7caa	MulterError: Unexpected field	POST	/users/update/profile	http://localhost:3000
+20240112	15:58:43	faa367e9-992d-4b9e-a1cd-bfbffb8aa966	MulterError: Unexpected field	POST	/users/update/profile	http://localhost:3000
+20240112	16:06:09	5f77549f-c65c-4f59-b81d-d4677bbff97a	MulterError: Unexpected field	POST	/users/update/profile	http://localhost:3000
+20240112	16:07:08	68fd6137-e9b4-4ca0-b24f-8a27e7dbb2b9	MulterError: Unexpected field	POST	/users/update/profile	http://localhost:3000
+20240112	16:16:33	0ed6b902-b1e9-49c8-8754-2a4af709b1f4	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:16:34	074c0cdc-8f68-4d1b-a784-860056f25cc1	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:19:05	ce46ee19-dfb8-48e2-88a0-095eeedad526	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:19:14	fe17e6ae-354a-45db-b6d8-a7dcaf7dd133	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:19:14	a357d060-a5f0-4c14-9b79-4390ed2e1e0a	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:20:55	2cf4584b-7ac7-40c7-b2fa-b16be4e2ccd8	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240112	16:20:55	f6b59e0d-c5ba-4aaf-9591-dc6b6ce67411	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
+20240116	21:41:42	66ec9b8a-b11b-4dcf-8d74-c64e5570b83b	SyntaxError: Unexpected token " in JSON at position 0	POST	/users/update/request	http://localhost:3000
+20240116	21:52:29	cce6fd9c-cfff-4d26-88fd-adbfa4e731d0	RangeError: Invalid status code: undefined	POST	/userRequest/update/request	http://localhost:3000
