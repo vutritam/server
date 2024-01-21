@@ -11,9 +11,9 @@ const OrderServices = require("../services/orderServices");
 const getAllOrderController = async (req, res) => {
   try {
     const getAllProductOrder = await OrderServices.getAllOrderServices();
-    const { status, success, message, data } = getAllProductOrder;
+    const { statusCode, success, message, data } = getAllProductOrder;
     if (getAllProductOrder) {
-      return res.json({ message, status, data, success });
+      return res.json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -39,8 +39,8 @@ const getAllOrderByLocationController = async (req, res) => {
     const getAllProductOrder =
       await OrderServices.getAllOrderByLocationServices(req.body);
     if (getAllProductOrder) {
-      const { message, status, data, success } = getAllProductOrder;
-      return res.json({ message, status, data, success });
+      const { message, statusCode, data, success } = getAllProductOrder;
+      return res.json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -65,8 +65,13 @@ const getAllByLocationSocketController = async (data) => {
   try {
     const getProductByLocationEmployee =
       await OrderServices.getAllByLocationSocketServices(data);
-    if (getProductByLocationEmployee.length > 0) {
-      return getProductByLocationEmployee;
+    if (getProductByLocationEmployee) {
+      return {
+        success: getProductByLocationEmployee.message,
+        statusCode: getProductByLocationEmployee.statusCode,
+        message: getProductByLocationEmployee.message,
+        data: getProductByLocationEmployee.data,
+      };
     }
     return [];
   } catch (error) {
@@ -93,8 +98,8 @@ const getAllOrderByNumberTableController = async (req, res) => {
     const getProductByLocationEmployee =
       await OrderServices.getAllOrderByNumberTableServices(req.body);
     if (getProductByLocationEmployee) {
-      const { message, status, data, success } = getProductByLocationEmployee;
-      return res.json({ message, status, data, success });
+      const { message, statusCode, data, success } = getProductByLocationEmployee;
+      return res.json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -122,8 +127,8 @@ const getAllOrderByNumberTableAndLocationUserController = async (req, res) => {
         req.body
       );
     if (getProductByTable) {
-      const { message, status, data, success } = getProductByTable;
-      return res.json({ message, status, data, success });
+      const { message, statusCode, data, success } = getProductByTable;
+      return res.json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -147,8 +152,8 @@ const getAllOrderByUserController = async (req, res) => {
   try {
     const getAllOrderByUser = await OrderServices.getAllOrderByUserServices();
     if (getAllOrderByUser) {
-      const { message, status, data, success } = getAllOrderByUser;
-      return res.status(200).json({ message, status, data, success });
+      const { message, statusCode, data, success } = getAllOrderByUser;
+      return res.status(200).json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -173,8 +178,8 @@ const getProductsByRoleController = async (req, res) => {
   try {
     let getDataRoles = await OrderServices.getProductsByRoleServices(req.body);
     if (getDataRoles) {
-      const { message, status, data, success } = getDataRoles;
-      return res.status(200).json({ message, status, data, success });
+      const { message, statusCode, data, success } = getDataRoles;
+      return res.status(200).json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -199,8 +204,8 @@ const deleteOrderController = async (req, res) => {
   try {
     const deleteItem = await OrderServices.deleteOrderServices(req.body);
     if (deleteItem) {
-      const { message, status, data, success } = deleteItem;
-      return res.status(200).json({ message, status, data, success });
+      const { message, statusCode, data, success } = deleteItem;
+      return res.status(200).json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -229,25 +234,15 @@ const getAllOrderByLocationSocketController = async (tableNumber, location) => {
         location
       );
     if (getProductByTable) {
-      return getProductByTable;
+      return {
+        success: getProductByTable.success,
+        statusCode: getProductByTable.statusCode,
+        message: getProductByTable.message,
+        data: getProductByTable.data,
+      };
     }
-    return [];
   } catch (error) {
-    if (error instanceof AuthenticationError) {
-      return res.json({
-        success: false,
-        statusCode: error.code,
-        message: error.message,
-        data: [],
-      });
-    } else {
-      return res.json({
-        success: false,
-        statusCode: error.code,
-        message: "Internal Server Error",
-        data: [],
-      });
-    }
+    console.log(error, 'lỗi tại getAllOrderByLocationSocketController');
   }
 };
 
@@ -256,8 +251,8 @@ const handleDeleteAllOrderController = async (req, res) => {
     const getProductByTable =
       await OrderServices.handleDeleteAllOrderServices();
     if (getProductByTable) {
-      const { message, status, data, success } = getProductByTable;
-      return res.status(200).json({ message, status, data, success });
+      const { message, statusCode, data, success } = getProductByTable;
+      return res.status(200).json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -284,8 +279,8 @@ const handleUpdateStatusOrderController = async (req, res) => {
     const UpdateStatusOrder =
       await OrderServices.handleUpdateStatusOrderServices(req.body, orderId);
     if (UpdateStatusOrder) {
-      const { message, status, data, success } = UpdateStatusOrder;
-      return res.status(200).json({ message, status, data, success });
+      const { message, statusCode, data, success } = UpdateStatusOrder;
+      return res.status(200).json({ message, statusCode, data, success });
     }
   } catch (error) {
     if (error instanceof AuthenticationError) {
@@ -309,25 +304,18 @@ const handleUpdateStatusOrderController = async (req, res) => {
 const createNewOrderController = async (data) => {
   try {
     const NewOrder = await OrderServices.createNewOrderServices(data);
+    console.log(NewOrder,'ssssdaw');
     if (NewOrder) {
-      return NewOrder;
+      console.log('vào ko');
+      return {
+        success: NewOrder.success,
+        statusCode: NewOrder.statusCode,
+        message: NewOrder.message,
+        data: NewOrder.data,
+      };
     }
   } catch (error) {
-    if (error instanceof AuthenticationError) {
-      return res.json({
-        success: false,
-        statusCode: error.code,
-        message: error.message,
-        data: [],
-      });
-    } else {
-      return res.json({
-        success: false,
-        statusCode: error.code,
-        message: "Internal Server Error",
-        data: [],
-      });
-    }
+    console.log(error, "error at createNewOrderController");
   }
 };
 

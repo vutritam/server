@@ -34,8 +34,8 @@ const init = (server) => {
     socket.on(ResponseType.MyEvent, async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
       const locationRoom = `room-${data?.location}`;
-      let newData= await createNewOrderController(data);
-      if(newData){
+      let newData = await createNewOrderController(data);
+      if(newData?.success){
         let result = await getAllOrderByLocationSocketController(
           data.tableNumber,
           data?.location
@@ -43,6 +43,13 @@ const init = (server) => {
         let resultEmployee = await getAllByLocationSocketController(data);
         io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, result);
         io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
+      } else {
+        io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, {
+            success: newData.success,
+            statusCode: newData.statusCode,
+            message: newData.message,
+            data: [],
+        });
       }
     });
 

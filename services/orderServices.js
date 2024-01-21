@@ -1,5 +1,6 @@
 const req = require("express/lib/request");
 const Order = require("../models/Order");
+const Product = require("../models/Products");
 const asyncHandler = require("express-async-handler");
 const AuthenticationError = require("../config/authenticationError");
 
@@ -46,7 +47,12 @@ const getAllOrderByLocationServices = async (orderData) => {
         success: true,
       };
     }
-    throw new AuthenticationError("Không tìm thấy đơn order nào", 400);
+    return {
+      message: `Không tìm thấy đơn order nào`,
+      status: 400,
+      data: [],
+      success: false,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -64,9 +70,19 @@ const getAllByLocationSocketServices = asyncHandler(async (data) => {
       .exec();
     if (getProductByLocationEmployee.length > 0) {
       let data = getProductByLocationEmployee;
-      return data;
+      return {
+        message: `Get all success`,
+        status: 200,
+        data: data,
+        success: true,
+      };
     }
-    return [];
+    return {
+      message: `thất bại`,
+      status: 400,
+      data: [],
+      success: false,
+    };
   } catch (error) {
     throw error;
   }
@@ -91,7 +107,12 @@ const getAllOrderByNumberTableServices = async (orderData) => {
         success: true,
       };
     }
-    throw new AuthenticationError("Không tìm thấy sản phẩm nào", 400);
+    return {
+      message: `Không tìm thấy sản phẩm nào`,
+      status: 400,
+      data: getProductByTable,
+      success: false,
+    };
   } catch (error) {
     throw error;
   }
@@ -114,7 +135,12 @@ const getAllOrderByNumberTableAndLocationUserServices = async (orderData) => {
         success: true,
       };
     }
-    throw new AuthenticationError("Không tìm thấy sản phẩm nào", 400);
+    return {
+      message: `Không tìm thấy sản phẩm nào`,
+      status: 400,
+      data: getProductByTable,
+      success: false,
+    };
   } catch (error) {
     throw error;
   }
@@ -156,7 +182,12 @@ const getProductsByRoleServices = async (orderData) => {
             success: true,
           };
         }
-        throw new AuthenticationError("Không tìm thấy order nào", 400);
+        return {
+          message: `Không tìm thấy order nào`,
+          status: 400,
+          data: getOrderAfterDelete,
+          success: false,
+        };
 
       case "employee":
         let getDataEmployee = await Order.find({
@@ -174,7 +205,12 @@ const getProductsByRoleServices = async (orderData) => {
             success: true,
           };
         }
-        throw new AuthenticationError("Không tìm thấy order nào", 400);
+        return {
+          message: `Không tìm thấy order nào`,
+          status: 400,
+          data: [],
+          success: false,
+        };
       default:
         break;
     }
@@ -208,7 +244,12 @@ const deleteOrderServices = async (orderData) => {
         success: true,
       };
     }
-    throw new AuthenticationError("Không tìm thấy order nào", 400);
+    return {
+      message: `Không tìm thấy order nào`,
+      status: 400,
+      data: getOrderAfterDelete,
+      success: false,
+    };
   } catch (error) {
     throw error;
   }
@@ -223,9 +264,19 @@ const getAllOrderByLocationSocketServices = async (tableNumber, location) => {
       .populate("productId")
       .exec();
     if (getProductByTable) {
-      return getProductByTable;
+      return {
+        success: true,
+        statusCode: 200,
+        message: "Lấy thành công",
+        data: getProductByTable,
+      };
     }
-    return [];
+    return {
+      success: false,
+      statusCode: 400,
+      message: "Lấy thất bại kiểm tra lại data",
+      data: [],
+    };
   } catch (error) {
     throw error;
   }
@@ -254,10 +305,19 @@ const handleUpdateStatusOrderServices = async (orderData, orderId) => {
       { new: true } // Option để trả về bản ghi đã cập nhật
     );
     if (!updateOrder) {
-      throw new AuthenticationError("Không tìm thấy item nào", 400);
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Không tìm thấy item nào",
+        data: [],
+      };
     }
-
-    return { message: `update status success`, status: 200, success: true };
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Cập nhật thành công",
+      data: [],
+    };
   } catch (error) {
     throw error;
   }
@@ -267,22 +327,44 @@ const createNewOrderServices = async (orderData) => {
   try {
     const { tableNumber, productId, location, quantity, description, status } =
       orderData;
-      console.log(orderData,'description');
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({
       tableNumber,
       productId,
       location,
-      status:  { $nin: ["order_success", "order_deleted"] },
+      status: { $nin: ["order_success", "order_deleted"] },
     }).exec();
-    if (existingOrder) {
+    const productItem = await Product.findOne({ _id: productId }).exec();
+    if (existingOrder && productItem && productItem.quantity > 0 ) {
+      
       // Nếu đã tồn tại
-      if (existingOrder.status !== "order_success") {
-        // Nếu status khác "order_success", cập nhật số lượng
+      if (existingOrder.status !== "order_success" ) {
+        if(productItem.quantity <= 0 ){
+          return {
+            success: false,
+            statusCode: 400,
+            message: "hết hàng",
+            data: [],
+          };
+        }
+        if((productItem.quantity - quantity ) < 0){
+          return {
+            success: false,
+            statusCode: 400,
+            message: "vượt quá số lượng",
+            data: [],
+          };
+        }
         existingOrder.quantity += quantity;
+        productItem.status = false;
+        productItem.quantity -= quantity;
+        await productItem.save();
         await existingOrder.save();
-
-        return existingOrder;
+        return {
+          success: true,
+          statusCode: 200,
+          data: [],
+        };
       } else {
         const objectOrder = {
           tableNumber,
@@ -291,17 +373,30 @@ const createNewOrderServices = async (orderData) => {
           productId,
           location,
           status,
-          ...req.body,
         };
         const orderUser = await Order.create(objectOrder);
         if (orderUser) {
-          return orderUser;
+          productItem.status = false;
+          productItem.quantity -= quantity;
+          await productItem.save();
+          return {
+            success: true,
+            statusCode: 200,
+            message: "Tạo mới order thành công",
+            data: orderUser,
+          };
+        } else {
+          return {
+            success: false,
+            statusCode: 400,
+            message: "Tạo mới order thất bại",
+            data: [],
+          };
         }
-        throw new AuthenticationError("Tạo mới order thất bại", 400);
       }
     } else {
       // Nếu không tồn tại, tạo mới đơn hàng mới
-      if (status !== "order_success") {
+      if (status !== "order_success" && productItem.quantity > 0) {
         const objectOrder = {
           tableNumber,
           quantity,
@@ -309,14 +404,34 @@ const createNewOrderServices = async (orderData) => {
           productId,
           location,
           status,
-          ...req.body,
         };
         const orderUser = await Order.create(objectOrder);
-
-        return orderUser;
+        if (orderUser) {
+            productItem.status = false;
+            productItem.quantity -= quantity;
+            await productItem.save();
+           
+          return {
+            success: true,
+            statusCode: 200,
+            message: "Tạo mới thành công",
+            data: orderUser,
+          };
+        }
+        return {
+          success: false,
+          statusCode: 400,
+          message: "Tạo mới order thất bại",
+          data: [],
+        };
       } else {
         // Nếu status là "order_success", trả về thông báo lỗi
-        throw new AuthenticationError("Tạo mới order thất bại", 400);
+        return {
+          success: false,
+          statusCode: 400,
+          message: "Tạo mới order thất bại do hết hàng",
+          data: [],
+        };
       }
     }
   } catch (error) {
