@@ -339,14 +339,6 @@ const createNewOrderServices = async (orderData) => {
       
       // Nếu đã tồn tại
       if (existingOrder.status !== "order_success" ) {
-        if(productItem.quantity <= 0 ){
-          return {
-            success: false,
-            statusCode: 400,
-            message: "hết hàng",
-            data: [],
-          };
-        }
         if((productItem.quantity - quantity ) < 0){
           return {
             success: false,
@@ -429,7 +421,7 @@ const createNewOrderServices = async (orderData) => {
         return {
           success: false,
           statusCode: 400,
-          message: "Tạo mới order thất bại do hết hàng",
+          message: "Đã hết hàng",
           data: [],
         };
       }
