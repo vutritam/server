@@ -16,6 +16,19 @@ const getAllProductServices = async () => {
   }
 };
 
+// get product by id service
+const getProductByIdService = async (productData) => {
+  try {
+    const product = await productModel.findById(productData);
+    if (product) {
+      return { status: true, success: true, message: "", data: product };
+    }
+    throw new AuthenticationError("Không tìm thấy sản phẩm nào", 400);
+  } catch (error) {
+    throw error;
+  }
+};
+
 // filter product
 const getProductFilterByConditionServices = async (productData) => {
   const { name, price, orther, condition, comparition, dateTime } = productData;
@@ -164,4 +177,5 @@ module.exports = {
   getAllProductServices,
   createProductServices,
   getProductFilterByConditionServices,
+  getProductByIdService
 };
