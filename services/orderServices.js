@@ -1,4 +1,3 @@
-const req = require("express/lib/request");
 const Order = require("../models/Order");
 const Product = require("../models/Products");
 const asyncHandler = require("express-async-handler");
@@ -32,9 +31,9 @@ const getAllOrderServices = asyncHandler(async () => {
 
 const getAllOrderByLocationServices = async (orderData) => {
   try {
-    const { location } = orderData;
+    const { locationId } = orderData;
     const getAllProductOrder = await Order.find({
-      location: location,
+      locationId: locationId,
       status: { $ne: "order_deleted" },
     })
       .populate("productId")
@@ -61,9 +60,9 @@ const getAllOrderByLocationServices = async (orderData) => {
 
 const getAllByLocationSocketServices = asyncHandler(async (data) => {
   try {
-    const { location } = data;
+    const { locationId } = data;
     const getProductByLocationEmployee = await Order.find({
-      location: location,
+      locationId: locationId,
     })
       .sort({ date: -1 })
       .populate("productId")
@@ -89,12 +88,12 @@ const getAllByLocationSocketServices = asyncHandler(async (data) => {
 });
 
 const getAllOrderByNumberTableServices = async (orderData) => {
-  const { tableNumber, location } = orderData;
+  const { tableNumber, locationId } = orderData;
 
   try {
     const getProductByTable = await Order.find({
       tableNumber: tableNumber,
-      location: location,
+      locationId: locationId,
     })
       .populate("productId")
       .exec();
@@ -120,12 +119,12 @@ const getAllOrderByNumberTableServices = async (orderData) => {
 
 const getAllOrderByNumberTableAndLocationUserServices = async (orderData) => {
   try {
-    const { tableNumber, location } = orderData;
+    const { tableNumber, locationId } = orderData;
     const getProductByTable = await Order.find({
       tableNumber: tableNumber,
-      location: location,
+      locationId: locationId,
     })
-      .populate("productId")
+      .populate("productId").populate('locationId')
       .exec();
     if (getProductByTable) {
       return {
@@ -167,7 +166,7 @@ const getAllOrderByUserServices = async () => {
 
 const getProductsByRoleServices = async (orderData) => {
   try {
-    const { userRole, location } = orderData;
+    const { userRole, locationId } = orderData;
     switch (userRole) {
       case "admin":
         let getDataAdmin = await Order.find()
@@ -191,12 +190,14 @@ const getProductsByRoleServices = async (orderData) => {
 
       case "employee":
         let getDataEmployee = await Order.find({
-          location: location,
-          status: { $ne: "order_deleted" },
+          locationId: locationId,
+          status: { $ne: "order_deleted" }
         })
           .populate("productId")
+          .populate("locationId")
           .sort({ date: -1 })
           .exec();
+
         if (getDataEmployee) {
           return {
             message: `Get all success`,
@@ -221,7 +222,7 @@ const getProductsByRoleServices = async (orderData) => {
 
 const deleteOrderServices = async (orderData) => {
   try {
-    const { id, location, status } = orderData;
+    const { id, locationId, status } = orderData;
     const deleteItem = await Order.findByIdAndUpdate(
       id,
       {
@@ -231,7 +232,7 @@ const deleteOrderServices = async (orderData) => {
     );
 
     const getOrderAfterDelete = await Order.find({
-      location: location,
+      locationId: locationId,
       status: { $ne: "order_deleted" },
     })
       .populate("productId")
@@ -255,11 +256,11 @@ const deleteOrderServices = async (orderData) => {
   }
 };
 
-const getAllOrderByLocationSocketServices = async (tableNumber, location) => {
+const getAllOrderByLocationSocketServices = async (tableNumber, locationId) => {
   try {
     const getProductByTable = await Order.find({
       tableNumber: tableNumber,
-      location: location,
+      locationId: locationId,
     })
       .populate("productId")
       .exec();
@@ -325,13 +326,13 @@ const handleUpdateStatusOrderServices = async (orderData, orderId) => {
 
 const createNewOrderServices = async (orderData) => {
   try {
-    const { tableNumber, productId, location, quantity, description, status } =
+    const { tableNumber, productId, locationId, quantity, description, status } =
       orderData;
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({
       tableNumber,
       productId,
-      location,
+      locationId,
       status: { $nin: ["order_success", "order_deleted"] },
     }).exec();
     const productItem = await Product.findOne({ _id: productId }).exec();
@@ -363,7 +364,7 @@ const createNewOrderServices = async (orderData) => {
           quantity,
           description,
           productId,
-          location,
+          locationId,
           status,
         };
         const orderUser = await Order.create(objectOrder);
@@ -394,7 +395,7 @@ const createNewOrderServices = async (orderData) => {
           quantity,
           description,
           productId,
-          location,
+          locationId,
           status,
         };
         const orderUser = await Order.create(objectOrder);

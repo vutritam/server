@@ -1,71 +1,131 @@
-const locationModel = require("../models/Location");
+const AuthenticationError = require("../config/authenticationError");
+const locationService = require("../services/locationServices");
 
 // @route POST /auth
 // @access Public
-const addLocation = async (req, res) => {
-  const { nameLocation, address } = req.body;
-  if (!nameLocation || !address) {
-    return res.status(400).json({ message: 'All fields are required', status: 400, data:[], success:false  })
+const addLocationController = async (req, res) => {
+    try {
+        const listQrCode = await locationService.addLocationService(req.body);
+    
+        if (listQrCode) {
+          const { status, success, message, data } = listQrCode
+          return res
+            .json({ status ,success, message, data });
+        }
+       
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: error.message,
+            data: [],
+          });
+        } else {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: 'Internal Server Error',
+            data: [],
+          });
+        }
+      }
 }
- // Check for duplicate nameLocation
- const duplicate = await locationModel.findOne({ nameLocation }).lean().exec()
-
- if (duplicate) {
-     return res.json({ message: 'nameLocation was existed', status: 400, data:[], success:false })
- }
-
- const newLocation = { nameLocation, address }
-
- const location = await locationModel.create(newLocation)
-
- if (location) { //created 
-     res.json({ message: `New location created`, status: 200, data:[], success: true } )
- } else {
-     res.json({ message: 'Invalid location data received', status: 400, data:[], success:false })
- }
-};
 
 
-const getAllLocation = asyncHandler(async (req, res) => {
-    // Get all users from MongoDB
-    const locations = await locationModel.find().exec()
+const getAllLocationController = async (req, res) => {
+    try {
+        const listQrCode = await locationService.getAllLocationService();
+    
+        if (listQrCode) {
+          const { status, success, message, data } = listQrCode
+          return res
+            .json({ status ,success, message, data });
+        }
+       
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: error.message,
+            data: [],
+          });
+        } else {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: 'Internal Server Error',
+            data: [],
+          });
+        }
+      }
+}
 
-    // If no users 
-    if (!locations?.length) {
-        return res.status(400).json({ message: 'Invalid location data received', status: 400, data:[], success:false })
-    }
-
-    res.json({ message: `get all location success`, status: 200, data: locations , success: true } )
-})
+const getLocationByIdController = async (req, res) => {
+    try {
+        const location = await locationService.getLocationByIdService(req.params.id);
+    
+        if (location) {
+          const { status, success, message, data } = location
+          return res
+            .json({ status ,success, message, data });
+        }
+       
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: error.message,
+            data: [],
+          });
+        } else {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: 'Internal Server Error',
+            data: [],
+          });
+        }
+      }
+}
 
 // @route DELETE /users
 // @access Private
-const deleteLocationById = asyncHandler(async (req, res) => {
-    const { id } = req.body
-    const locations = await locationModel.find().exec()
-    // Confirm data
-    if (!id) {
-        return res.status(400).json({ message: 'ID Required' })
-    }
-
-    // Does the location still have assigned notes?
-    const locationDelete = await locationModel.findById(id).exec()
-    if (!locationDelete) {
-        return res.status(400).json({ message: 'check location again', status: 400, data: [] , success: false })
-    }
-
-    const result = await locationDelete.deleteOne()
-
-    if (!result) {
-        return res.status(400).json({ message: 'check location again', status: 400, data: [] , success: false })
-    }
+const deleteLocationByIdController = async (req, res) => {
+    try {
+        const { id } = req.params.id;
+        const listQrCode = await locationService.deleteLocationByIdService(id);
     
-    res.json({ message: `deleted location success`, status: 200, data: locations , success: true } )
-})
+        if (listQrCode) {
+          const { status, success, message, data } = listQrCode
+          return res
+            .json({ status ,success, message, data });
+        }
+       
+      } catch (error) {
+        if (error instanceof AuthenticationError) {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: error.message,
+            data: [],
+          });
+        } else {
+          return res.json({
+            success: false,
+            statusCode: error.code,
+            message: 'Internal Server Error',
+            data: [],
+          });
+        }
+      }
+}
     
-
 module.exports = {
-    addLocation,
-    getAllLocation,
-    deleteLocationById
+    addLocationController,
+    getAllLocationController,
+    deleteLocationByIdController,
+    getLocationByIdController
 };

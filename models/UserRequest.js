@@ -6,10 +6,7 @@ const userRequestSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    location: {
-        type: String,
-        default: ''
-    },
+    locationId: { type: Schema.Types.ObjectId, ref: "Location" },
     status: {
         type: String,
         default: '' // request_accepted, request_failure, request_pending

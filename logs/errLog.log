@@ -14,3 +14,33 @@
 20240112	16:20:55	f6b59e0d-c5ba-4aaf-9591-dc6b6ce67411	RangeError: Invalid status code: undefined	POST	/users/65a100b27d9776850810e11d	http://localhost:3000
 20240116	21:41:42	66ec9b8a-b11b-4dcf-8d74-c64e5570b83b	SyntaxError: Unexpected token " in JSON at position 0	POST	/users/update/request	http://localhost:3000
 20240116	21:52:29	cce6fd9c-cfff-4d26-88fd-adbfa4e731d0	RangeError: Invalid status code: undefined	POST	/userRequest/update/request	http://localhost:3000
+20240204	16:17:42	0b28bac1-9ccb-4a6b-8d9b-6aacb02b68f7	SyntaxError: Unexpected token P in JSON at position 71	POST	/users/add/admin	undefined
+20240204	16:18:34	7822e3eb-942d-4509-9b26-ee0de4b15531	SyntaxError: Unexpected token P in JSON at position 71	POST	/users/add/admin	undefined
+20240204	16:21:41	86bfe519-e946-4f3b-b9fa-c6a629483630	SyntaxError: Unexpected token P in JSON at position 71	POST	/users/add/admin	undefined
+20240204	16:22:33	5f445add-1a21-4a47-961c-0eae981d37f3	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:23:00	dfd2a8ff-0bf0-4704-b79e-1635b018d49e	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:24:00	71bed87e-5bb4-4390-be85-59d2268c2a6a	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:25:14	e6f2797a-2cd1-4a7f-ba81-70ec5e254afd	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:26:15	b8cf7994-41ff-4bae-a7c7-2977064bc7ec	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:26:46	1fd8b388-3e8f-41f3-8dff-2d8b49aa7942	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:27:44	e20adb57-e49f-4f21-be8a-1f02792ae817	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:28:29	87e1f4b5-f1d2-4024-b411-043e2ad80e6f	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:28:53	7768629c-dc28-4689-bf02-1527d47bf647	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:29:17	c7e361d3-7e5a-4f0e-9fa0-7246c0f6d495	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	16:30:34	5750bdc1-5cbe-4683-8c3a-df39ad360fb8	SyntaxError: Unexpected token P in JSON at position 68	POST	/users/add/admin	undefined
+20240204	16:30:48	b4a8926a-f56a-4b96-813b-1fe5fa2f96a1	SyntaxError: Unexpected token P in JSON at position 64	POST	/users/add/admin	undefined
+20240204	16:30:57	40691058-0bb9-4efa-97f2-991d8b910a6a	SyntaxError: Unexpected token P in JSON at position 66	POST	/users/add/admin	undefined
+20240204	17:41:39	cb385ba4-928a-4922-920f-474bf0cc2174	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:41:39	79d50c92-9952-4174-88de-d3d27da87991	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:41:40	4f2496e5-0d13-4a9d-9d19-2c3b262efdd2	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:41:40	9ca8a6bc-cac2-409d-9ebd-4663604a2af2	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:42:16	7bab115a-a64a-416c-97a4-c01c2c0a18db	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:42:16	6131c5fc-b589-46d8-8747-d69a7eab9fa5	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:43:34	105010c6-31dd-48bf-a6cd-c51ad812335c	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:43:34	2d4f9112-af47-4123-9953-2f21ef96bdec	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:44:23	6cf5eaa1-447b-4a0e-94d3-3cbca7ea002f	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:44:24	3aac4e80-27e4-4ec1-8109-2066c776bc4c	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:45:09	79fd4c71-84a0-409e-9262-6639e4b9b52f	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:45:09	a4b2260c-feee-4c33-b8db-22d317e2dc9f	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:45:09	459651c5-9342-488b-adc3-8328fecae693	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000
+20240204	17:45:09	72852fea-a367-46f8-8204-e0410f0e7226	SyntaxError: Unexpected token " in JSON at position 0	POST	/location/getLocationById	http://localhost:3000

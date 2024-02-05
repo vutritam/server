@@ -4,12 +4,12 @@ const User = require("../models/User");
 
 const updateIsChangeRequestUserServices = async (userData) => {
   try {
-    const { _id, isRequest, reason, location , status} = userData;
+    const { _id, isRequest, reason, locationId , status} = userData;
     const checkExisted = await UserRequest.findOne({ userId: _id });
     if (checkExisted) {
       checkExisted.reason = reason;
       checkExisted.isRequest = isRequest;
-      checkExisted.location = location;
+      checkExisted.locationId = locationId;
       checkExisted.status = status;
       const updateSuccess = await checkExisted.save();
       if (updateSuccess && isRequest !== "change_location") {
@@ -33,7 +33,7 @@ const updateIsChangeRequestUserServices = async (userData) => {
         userId: _id,
         isRequest: isRequest,
         reason: reason,
-        location: location,
+        locationId: locationId,
       };
       const newRequest = await UserRequest.create(userObject);
       if (newRequest) {
@@ -69,7 +69,7 @@ const updateIsChangeRequestUserServices = async (userData) => {
 };
 const getAllRequestUserServices = async () => {
   try {
-    const findUser = await UserRequest.find().populate('userId').exec();
+    const findUser = await UserRequest.find().populate('userId').populate('locationId').exec();
     if (findUser) {
       return {
         success: true,
@@ -93,10 +93,10 @@ const approvedRequestForUserServices = async (userData) => {
     try {
         const { _id, status } = userData;
         const checkExisted = await UserRequest.findOne({ userId: _id });
-        if (checkExisted) {
+        if (checkExisted && checkExisted.isRequest !== 'unChange_location') {
           checkExisted.status = status;
           const updateSuccess = await checkExisted.save();
-          const userUpdate = await User.findByIdAndUpdate(_id, {location: checkExisted.location}, {returnDocument: true}).exec();
+          const userUpdate = await User.findByIdAndUpdate(_id, {locationId: checkExisted.locationId}, {returnDocument: true}).exec();
           if (updateSuccess && userUpdate) {
             return {
               success: true,
@@ -105,9 +105,10 @@ const approvedRequestForUserServices = async (userData) => {
               data: [],
             };
           } 
-          throw new AuthenticationError("Invalid user data received", 400);
-        } 
-        throw new AuthenticationError("Invalid user data received", 400);    
+          throw new AuthenticationError("Người yêu cầu không tồn tại hoặc lý do khác vui lòng kiểm tra lại", 400);
+        } else {
+          throw new AuthenticationError("Yêu cầu này đã bị hủy", 400);    
+        }
       } catch (error) {
         console.log(error, "eror");
         // Handle other exceptions

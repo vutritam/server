@@ -205,7 +205,6 @@ const createNewAdminController = asyncHandler(async (req, res) => {
 const updateProfileUserController = async (req, res) => {
   try {
       // Gọi service để tạo người dùng mới
-console.log(req,'req.body');
       const result = await userServices.updateProfileUserServices(req);
       // Kiểm tra kết quả từ service
       if (result.success) {

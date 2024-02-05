@@ -32,15 +32,17 @@ const init = (server) => {
     });
 
     socket.on(ResponseType.MyEvent, async (data) => {
-      const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.location}`;
-      const locationRoom = `room-${data?.location}`;
+      const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.locationId}`;
+      const locationRoom = `room-${data?.locationId}`;
       let newData = await createNewOrderController(data);
+      console.log(locationRoom,'newData');
       if(newData?.success){
         let result = await getAllOrderByLocationSocketController(
           data.tableNumber,
-          data?.location
+          data?.locationId
         );
         let resultEmployee = await getAllByLocationSocketController(data);
+        console.log(resultEmployee,'resultEmployee');
         io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, result);
         io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
       } else {
@@ -54,17 +56,17 @@ const init = (server) => {
     });
 
     socket.on(ResponseType.GetAllOrderByStatus, async (data) => {
-      const { tableNumber, location } = data;
-      const roomName = `room-${tableNumber}-${location}`;
-      const locationRoom = `room-${data?.location}`;
-      let result = await getAllOrderByLocationSocketController(tableNumber, location);
+      const { tableNumber, locationId } = data;
+      const roomName = `room-${tableNumber}-${locationId}`;
+      const locationRoom = `room-${data?.locationId}`;
+      let result = await getAllOrderByLocationSocketController(tableNumber, locationId);
       let resultEmployee = await getAllByLocationSocketController(data);
       io.to(roomName).emit(ResponseType.ResponseOrderStatus, result);
       io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
     });
 
     socket.on(ResponseType.GetProductOrder, async (data) => {
-      const locationRoom = `room-${data?.location}`;
+      const locationRoom = `room-${data?.locationId}`;
       let result = await getAllByLocationSocketController(data);
       io.to(locationRoom).emit(ResponseType.ResProductOrder, result);
     });

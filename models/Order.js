@@ -19,10 +19,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     productId: { type: Schema.Types.ObjectId, ref: 'Products' },
-    location:{
-        type: String,
-        default: ''
-    },
+    locationId: { type: Schema.Types.ObjectId, ref: "Location" },
     description:  {
         type: String,
         default:  ''

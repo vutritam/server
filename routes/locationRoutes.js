@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const locationController = require("../controllers/locationController");
-const loginLimiter = require("../middleware/loginLimiter");
 
-router.route("/addLocation").post(locationController.addLocation);
-
-router.route("/getAllLocation").get(locationController.getAllLocation);
-
-router.route("/deleteLocation").post(locationController.deleteLocationById);
+router.route("/addLocation").post(locationController.addLocationController);
+router.route("/getAllLocation").get(locationController.getAllLocationController);
+router.route("/deleteLocationById/:id").post(locationController.deleteLocationByIdController);
+router.route("/getLocationById/:id").post(locationController.getLocationByIdController);
 
 module.exports = router

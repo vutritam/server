@@ -7,7 +7,7 @@ const AuthenticationError = require("../config/authenticationError");
 const getUserByIdServices = async (userData) => {
   try {
     // Logic để lấy danh sách người dùng từ database
-    const userServices = await User.findById(userData).select("-password").populate("userRequestId").exec();
+    const userServices = await User.findById(userData).select("-password").populate("userRequestId").populate("locationId").exec();
     if (userServices) {
       return {
         success: true,
@@ -42,11 +42,11 @@ const getAllUsersServices = async () => {
 // @route POST /users
 // @access Private
 const createNewUserServices = async (userData) => {
-  const { username, password, location } = userData;
+  const { username, password, locationId } = userData;
 
   try {
     // Check for required fields
-    if (!username || !password || !location) {
+    if (!username || !password || !locationId) {
       throw new AuthenticationError("All fields are required", 400);
     }
     
@@ -61,7 +61,7 @@ const createNewUserServices = async (userData) => {
     const hashedPwd = await bcrypt.hash(password, 10); // salt rounds
 
     // Create and store new user
-    const userObject = { username, location, password: hashedPwd };
+    const userObject = { username, locationId, password: hashedPwd };
     const user = await User.create(userObject);
 
     if (user) {
@@ -84,7 +84,6 @@ const createNewUserServices = async (userData) => {
 
 const createNewAdminServices = async (userData) => {
   const { username, password } = userData;
-
   try {
     // Check for required fields
     if (!username || !password ) {

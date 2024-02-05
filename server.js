@@ -33,6 +33,8 @@ app.use('/products', require('./routes/products'))
 app.use('/order', require('./routes/orderRoutes'))
 app.use('/messageData', require('./routes/notiRoutes'))
 app.use('/workshift', require('./routes/workShift'))
+app.use('/qrcode', require('./routes/qrCodeRoutes'))
+app.use('/location', require('./routes/locationRoutes'))
 app.all('*',(req, res)=>{
     res.status(404)
     if(req.accepts('html')){

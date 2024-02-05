@@ -176,6 +176,7 @@ const getAllOrderByUserController = async (req, res) => {
 
 const getProductsByRoleController = async (req, res) => {
   try {
+    console.log(req.body,'req.body');
     let getDataRoles = await OrderServices.getProductsByRoleServices(req.body);
     if (getDataRoles) {
       const { message, statusCode, data, success } = getDataRoles;
@@ -304,9 +305,7 @@ const handleUpdateStatusOrderController = async (req, res) => {
 const createNewOrderController = async (data) => {
   try {
     const NewOrder = await OrderServices.createNewOrderServices(data);
-    console.log(NewOrder,'ssssdaw');
     if (NewOrder) {
-      console.log('vào ko');
       return {
         success: NewOrder.success,
         statusCode: NewOrder.statusCode,

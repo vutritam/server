@@ -17,10 +17,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default:''
     },
-    location: {
-        type: String,
-        default:''
-    },
+    locationId: { type: Schema.Types.ObjectId, ref: "Location" },
     roles: {
         type: [String],
         default: ['employee']

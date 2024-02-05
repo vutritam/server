@@ -45,7 +45,7 @@ const loginServices = async (authData) => {
       data: {
         username: foundUser.username,
         userId: foundUser.id,
-        location: foundUser.location,
+        locationId: foundUser.locationId,
         roles: foundUser.roles,
       },
       success: true,
