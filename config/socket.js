@@ -42,7 +42,6 @@ const init = (server) => {
           data?.locationId
         );
         let resultEmployee = await getAllByLocationSocketController(data);
-        console.log(resultEmployee,'resultEmployee');
         io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, result);
         io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
       } else {

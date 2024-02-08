@@ -12,7 +12,7 @@ const AuthenticationError = require("../config/authenticationError");
 
 const getAllOrderServices = asyncHandler(async () => {
   try {
-    const getAllProductOrder = await Order.find().populate("productId").exec();
+    const getAllProductOrder = await Order.find().populate("productId").populate("locationId").exec();
     if (getAllProductOrder) {
       return {
         message: `Get all success`,
@@ -37,6 +37,7 @@ const getAllOrderByLocationServices = async (orderData) => {
       status: { $ne: "order_deleted" },
     })
       .populate("productId")
+      .populate("locationId")
       .exec();
     if (getAllProductOrder) {
       return {
@@ -66,6 +67,7 @@ const getAllByLocationSocketServices = asyncHandler(async (data) => {
     })
       .sort({ date: -1 })
       .populate("productId")
+      .populate("locationId")
       .exec();
     if (getProductByLocationEmployee.length > 0) {
       let data = getProductByLocationEmployee;
@@ -94,10 +96,13 @@ const getAllOrderByNumberTableServices = async (orderData) => {
     const getProductByTable = await Order.find({
       tableNumber: tableNumber,
       locationId: locationId,
+      status: { $ne: 'order_done' }, // Lọc các trạng thái không phải 'order_done'
+      isPaid: false
     })
       .populate("productId")
+      .populate("locationId")
       .exec();
-
+    
     if (getProductByTable.length > 0) {
       return {
         message: `Get all success`,
@@ -124,7 +129,8 @@ const getAllOrderByNumberTableAndLocationUserServices = async (orderData) => {
       tableNumber: tableNumber,
       locationId: locationId,
     })
-      .populate("productId").populate('locationId')
+      .populate("productId")
+      .populate("locationId")
       .exec();
     if (getProductByTable) {
       return {
@@ -171,6 +177,7 @@ const getProductsByRoleServices = async (orderData) => {
       case "admin":
         let getDataAdmin = await Order.find()
           .populate("productId")
+          .populate("locationId")
           .sort({ date: -1 })
           .exec();
         if (getDataAdmin) {
@@ -191,7 +198,7 @@ const getProductsByRoleServices = async (orderData) => {
       case "employee":
         let getDataEmployee = await Order.find({
           locationId: locationId,
-          status: { $ne: "order_deleted" }
+          status: { $ne: "order_deleted" },
         })
           .populate("productId")
           .populate("locationId")
@@ -324,23 +331,53 @@ const handleUpdateStatusOrderServices = async (orderData, orderId) => {
   }
 };
 
+const updatePaymentForTableNumberService = async (orderData) => {
+  try {
+  const { tableNumber, objValues } = orderData;
+
+    //lưu trạng thái cập nhật vào cơ sở dữ liệu dùng updateOne hoặc updateMany của Mongoose
+    const updateStatusOrderPayment = await Order.updateMany({ tableNumber: tableNumber }, { $set: objValues }); // ex: { fieldName: true }
+
+    if (!updateStatusOrderPayment) {
+      throw new AuthenticationError(
+        "Thất bại vui lòng kiểm tra lại",
+        400
+      );
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Thành công",
+      data: [],
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createNewOrderServices = async (orderData) => {
   try {
-    const { tableNumber, productId, locationId, quantity, description, status } =
-      orderData;
+    const {
+      tableNumber,
+      productId,
+      locationId,
+      quantity,
+      description,
+      status,
+    } = orderData;
     // Kiểm tra xem có đơn hàng nào đã tồn tại với tableNumber và productId không
     const existingOrder = await Order.findOne({
       tableNumber,
       productId,
       locationId,
-      status: { $nin: ["order_success", "order_deleted"] },
+      status: { $nin: ["order_success", "order_deleted", "order_done"] },
     }).exec();
     const productItem = await Product.findOne({ _id: productId }).exec();
-    if (existingOrder && productItem && productItem.quantity > 0 ) {
-      
+    if (existingOrder && productItem && productItem.quantity > 0) {
       // Nếu đã tồn tại
-      if (existingOrder.status !== "order_success" ) {
-        if((productItem.quantity - quantity ) < 0){
+      if (existingOrder.status !== "order_success" && existingOrder.status !== "order_done") {
+        if (productItem.quantity - quantity < 0) {
           return {
             success: false,
             statusCode: 400,
@@ -386,10 +423,11 @@ const createNewOrderServices = async (orderData) => {
             data: [],
           };
         }
+
       }
     } else {
       // Nếu không tồn tại, tạo mới đơn hàng mới
-      if (status !== "order_success" && productItem.quantity > 0) {
+      if (status !== "order_success" && status !== "order_done" && productItem.quantity > 0) {
         const objectOrder = {
           tableNumber,
           quantity,
@@ -400,10 +438,10 @@ const createNewOrderServices = async (orderData) => {
         };
         const orderUser = await Order.create(objectOrder);
         if (orderUser) {
-            productItem.status = false;
-            productItem.quantity -= quantity;
-            await productItem.save();
-           
+          productItem.status = false;
+          productItem.quantity -= quantity;
+          await productItem.save();
+
           return {
             success: true,
             statusCode: 200,
@@ -445,4 +483,5 @@ module.exports = {
   getProductsByRoleServices,
   getAllOrderByLocationSocketServices,
   getAllOrderByNumberTableAndLocationUserServices,
+  updatePaymentForTableNumberService,
 };

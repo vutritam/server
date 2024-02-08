@@ -14,7 +14,31 @@ const getAllQrCodeServices = async () => {
     }
 
     throw new AuthenticationError(
-      "Lấy tất cả yêu cầu thất bại kiểm tra lại",
+      "Thất bại kiểm tra lại",
+      400
+    );
+  } catch (error) {
+    console.log(error, "eror");
+    // Handle other exceptions
+    throw error;
+  }
+};
+
+const getAllQrCodeByIdLocationServices = async (id) => {
+  try {
+
+    const findAllQrCode = await QRCodeSchema.find({ locationId: id}).populate("userId").populate("locationId").sort({ tableNumber: 1}).exec();
+    if (findAllQrCode) {
+      return {
+        success: true,
+        message: "Thành công",
+        status: 200,
+        data: findAllQrCode,
+      };
+    }
+
+    throw new AuthenticationError(
+      "Thất bại kiểm tra lại",
       400
     );
   } catch (error) {
@@ -55,14 +79,14 @@ const addListQrCodeServices = async (qrCodeData) => {
       if (!checkAddQrCode) {
         return {
           success: true,
-          message: `Tạo mới danh sách thành công.`,
+          message: `Tạo mới thành công.`,
           status: 200,
           data: [],
         };
       }
   
       throw new AuthenticationError(
-        "Có vài bàn tạo không thành công vui lòng thêm lại",
+        "Không thành công vui lòng kiểm tra lại",
         400
       );
     } catch (error) {
@@ -74,4 +98,5 @@ const addListQrCodeServices = async (qrCodeData) => {
 module.exports = {
   getAllQrCodeServices,
   addListQrCodeServices,
+  getAllQrCodeByIdLocationServices
 };

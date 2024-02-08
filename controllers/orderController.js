@@ -61,6 +61,33 @@ const getAllOrderByLocationController = async (req, res) => {
   }
 };
 
+const updatePaymentForTableNumberController = async (req, res) => {
+  try {
+    const getAllProductOrder =
+      await OrderServices.updatePaymentForTableNumberService(req.body);
+    if (getAllProductOrder) {
+      const { message, statusCode, data, success } = getAllProductOrder;
+      return res.json({ message, statusCode, data, success });
+    }
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: error.message,
+        data: [],
+      });
+    } else {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: "Internal Server Error",
+        data: [],
+      });
+    }
+  }
+};
+
 const getAllByLocationSocketController = async (data) => {
   try {
     const getProductByLocationEmployee =
@@ -331,4 +358,5 @@ module.exports = {
   getProductsByRoleController,
   getAllOrderByLocationSocketController,
   getAllOrderByNumberTableAndLocationUserController,
+  updatePaymentForTableNumberController
 };

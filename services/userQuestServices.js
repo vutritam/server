@@ -67,9 +67,10 @@ const updateIsChangeRequestUserServices = async (userData) => {
     throw error;
   }
 };
+
 const getAllRequestUserServices = async () => {
   try {
-    const findUser = await UserRequest.find().populate('userId').populate('locationId').exec();
+    const findUser = await UserRequest.find({status: { $ne: "request_failure" } }).populate('userId').populate('locationId').exec();
     if (findUser) {
       return {
         success: true,
@@ -89,11 +90,12 @@ const getAllRequestUserServices = async () => {
     throw error;
   }
 };
+
 const approvedRequestForUserServices = async (userData) => {
     try {
         const { _id, status } = userData;
         const checkExisted = await UserRequest.findOne({ userId: _id });
-        if (checkExisted && checkExisted.isRequest !== 'unChange_location') {
+        if (checkExisted && checkExisted.isRequest !== 'unChange_location' && status !== 'request_failure') {
           checkExisted.status = status;
           const updateSuccess = await checkExisted.save();
           const userUpdate = await User.findByIdAndUpdate(_id, {locationId: checkExisted.locationId}, {returnDocument: true}).exec();
@@ -107,8 +109,19 @@ const approvedRequestForUserServices = async (userData) => {
           } 
           throw new AuthenticationError("Người yêu cầu không tồn tại hoặc lý do khác vui lòng kiểm tra lại", 400);
         } else {
-          throw new AuthenticationError("Yêu cầu này đã bị hủy", 400);    
+          checkExisted.status = status;
+          const updateSuccess = await checkExisted.save();
+          if (updateSuccess) {
+            return {
+              success: true,
+              message: "Yêu cầu này đã bị hủy",
+              status: 200,
+              data: [],
+            };
+          } 
         }
+        throw new AuthenticationError("Yêu cầu này đã bị hủy", 400);    
+
       } catch (error) {
         console.log(error, "eror");
         // Handle other exceptions

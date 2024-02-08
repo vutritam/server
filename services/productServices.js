@@ -86,10 +86,10 @@ const getProductFilterByConditionServices = async (productData) => {
       // Thực hiện tìm kiếm dựa trên điều kiện xây dựng
       product = await productModel.find(conditions).exec();
     }
-
+    console.log(product,'products');
     if (product) {
       return {
-        status: true,
+        status: 200,
         success: true,
         message: "",
         data: product,

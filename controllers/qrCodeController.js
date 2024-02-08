@@ -33,6 +33,35 @@ const getAllQrCodeController = async (req, res) => {
   }
 };
 
+const getAllQrCodeByIdLocationController = async (req, res) => {
+  try {
+    const listQrCode = await qrCodeServices.getAllQrCodeByIdLocationServices(req.params.id);
+
+    if (listQrCode) {
+      const { status, success, message, data } = listQrCode
+      return res
+        .json({ status ,success, message, data });
+    }
+   
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: error.message,
+        data: [],
+      });
+    } else {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: 'Internal Server Error',
+        data: [],
+      });
+    }
+  }
+};
+
 const addListQrCodeByLocationController = async (req, res) => {
   try {
     const listQrCode = await qrCodeServices.addListQrCodeServices(req.body);
@@ -64,5 +93,6 @@ const addListQrCodeByLocationController = async (req, res) => {
 
 module.exports = {
     getAllQrCodeController,
-    addListQrCodeByLocationController
+    addListQrCodeByLocationController,
+    getAllQrCodeByIdLocationController
 };

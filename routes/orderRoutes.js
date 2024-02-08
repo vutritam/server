@@ -13,6 +13,7 @@ router.route("/deleteOrder").post(orderController.deleteOrderController);
 router.route("/deleteAllOrder").post(orderController.handleDeleteAllOrderController);
 router.route("/update/status/:id").post(orderController.handleUpdateStatusOrderController);
 router.route("/getAllOrderByUserRole").post(orderController.getProductsByRoleController);
+router.route("/updatePaymentForTableNumber").post(orderController.updatePaymentForTableNumberController);
 
 module.exports = router
 
