@@ -36,6 +36,16 @@ GET http://localhost:3500/products
 
 
 
+###
+POST http://localhost:3500/products/getPaginatedResults
+Content-Type: application/json
+
+
+{
+    "pageNumber": 1, 
+    "limitCount": 3
+}
+
 
 
 ###

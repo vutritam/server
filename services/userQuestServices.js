@@ -6,7 +6,7 @@ const updateIsChangeRequestUserServices = async (userData) => {
   try {
     const { _id, isRequest, reason, locationId , status} = userData;
     const checkExisted = await UserRequest.findOne({ userId: _id });
-    if (checkExisted) {
+    if (checkExisted ) {
       checkExisted.reason = reason;
       checkExisted.isRequest = isRequest;
       checkExisted.locationId = locationId;

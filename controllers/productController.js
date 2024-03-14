@@ -62,6 +62,36 @@ const getProductByIdController = async (req, res) =>{
 }
 
 
+const getPaginatedResultsController = async (req, res) =>{
+  try {
+    console.log(req.body,'ghfdjs');
+
+    const product = await productServices.getPaginatedResults(req.body);
+    if(product) {
+      const { status, success, message, data } = product
+      return res
+        .json({ status ,success, message, data });
+    }
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: error.message,
+        data: [],
+      });
+    } else {
+      return res.json({
+        success: false,
+        statusCode: error.code,
+        message: 'Internal Server Error',
+        data: [],
+      });
+    }
+  }
+}
+
+
 // filter product
 const getProductFilterByConditionController = async (req, res) => {
   try {
@@ -126,5 +156,6 @@ module.exports = {
   getAllProductController,
   createProductController,
   getProductFilterByConditionController,
-  getProductByIdController
+  getProductByIdController,
+  getPaginatedResultsController
 };

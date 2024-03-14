@@ -9,5 +9,6 @@ router.route("/").get(productController.getAllProductController);
 router.route("/add").post(upload.single('file'),productController.createProductController);
 router.route("/filterByCondition").post(productController.getProductFilterByConditionController);
 router.route("/getProductById/:id").post(productController.getProductByIdController);
+router.route("/getPaginatedResults").post(productController.getPaginatedResultsController);
 
 module.exports = router;

@@ -6,6 +6,8 @@ const {
   getAllByLocationSocketController,
   getAllOrderByLocationSocketController,
   createNewOrderController,
+  deletedOrderItemController,
+  createNewMuptipleOrderController,
 } = require("../controllers/orderController");
 const { getWorkShiftByTime } = require("../controllers/workShifltController");
 const l10n = require("../L10N/en.json");
@@ -34,8 +36,12 @@ const init = (server) => {
     socket.on(ResponseType.MyEvent, async (data) => {
       const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.locationId}`;
       const locationRoom = `room-${data?.locationId}`;
-      let newData = await createNewOrderController(data);
-      console.log(locationRoom,'newData');
+      let newData 
+      if(data.type == 'create'){
+        newData = await createNewOrderController(data);
+      }else {
+        newData = await deletedOrderItemController(data);
+      }
       if(newData?.success){
         let result = await getAllOrderByLocationSocketController(
           data.tableNumber,
@@ -46,6 +52,28 @@ const init = (server) => {
         io.to(locationRoom).emit(ResponseType.ResponseEmployee, resultEmployee);
       } else {
         io.to(tableNumberlocationRoom).emit(ResponseType.ResponseUserOrder, {
+            success: newData.success,
+            statusCode: newData.statusCode,
+            message: newData.message,
+            data: [],
+        });
+      }
+    });
+
+    socket.on(ResponseType.MuptipleOrder, async (data) => {
+      const tableNumberlocationRoom = `room-${data.tableNumber}-${data?.locationId}`;
+      const locationRoom = `room-${data?.locationId}`;
+      let newData = await createNewMuptipleOrderController(data);
+      if (newData && newData?.success) {
+        let result = await getAllOrderByLocationSocketController(
+          data.tableNumber,
+          data?.locationId
+        );
+        let resultEmployee = await getAllByLocationSocketController(data);
+        io.to(tableNumberlocationRoom).emit('reponseMuptipleUser', result);
+        io.to(locationRoom).emit('reponseMuptipleEmployee', resultEmployee);
+      } else {
+        io.to(tableNumberlocationRoom).emit('reponseMuptipleUser', {
             success: newData.success,
             statusCode: newData.statusCode,
             message: newData.message,

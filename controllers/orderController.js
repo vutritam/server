@@ -345,6 +345,39 @@ const createNewOrderController = async (data) => {
   }
 };
 
+const createNewMuptipleOrderController = async (data) => {
+  try {
+    const NewOrder = await OrderServices.createNewMuptipleOrderServices(data);
+    console.log(NewOrder,'NewOrder');
+    if (NewOrder) {
+      return {
+        success: NewOrder.success,
+        statusCode: NewOrder.statusCode,
+        message: NewOrder.message,
+        data: NewOrder.data,
+      };
+    }
+  } catch (error) {
+    console.log(error, "error at createNewMuptipleOrderController");
+  }
+};
+
+const deletedOrderItemController = async (data) => {
+  try {
+    const NewOrder = await OrderServices.deletedOrderItemServices(data);
+    if (NewOrder) {
+      return {
+        success: NewOrder.success,
+        statusCode: NewOrder.statusCode,
+        message: NewOrder.message,
+        data: NewOrder.data,
+      };
+    }
+  } catch (error) {
+    console.log(error, "error at deletedOrderItemServices");
+  }
+};
+
 module.exports = {
   getAllByLocationSocketController,
   createNewOrderController,
@@ -353,10 +386,12 @@ module.exports = {
   getAllOrderByNumberTableController,
   getAllOrderByUserController,
   deleteOrderController,
+  deletedOrderItemController,
   handleDeleteAllOrderController,
   handleUpdateStatusOrderController,
   getProductsByRoleController,
   getAllOrderByLocationSocketController,
   getAllOrderByNumberTableAndLocationUserController,
-  updatePaymentForTableNumberController
+  updatePaymentForTableNumberController,
+  createNewMuptipleOrderController
 };

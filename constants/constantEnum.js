@@ -13,6 +13,7 @@ const ResponseType = {
     Connection: "connection",
     MyEvent: "myEvent",
     JoinRoom: "joinRoom",
+    MuptipleOrder: "muptipleOrder",
     Room: "room",
     // Thêm các chuỗi cố định khác nếu cần
   };

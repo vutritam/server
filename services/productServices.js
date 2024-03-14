@@ -16,6 +16,19 @@ const getAllProductServices = async () => {
   }
 };
 
+const getPaginatedResults=async(productData)=>{
+  try {
+    const { pageNumber, limitCount } = productData
+    const productPaginated = await productModel.find().skip((pageNumber - 1) * limitCount).limit(limitCount);
+    if(productPaginated){
+      return { status: true, success: true, message: "", data: productPaginated };
+    }
+    throw new AuthenticationError("Không lấy được sản phẩm", 400);
+  } catch (error) {
+    throw error;
+  }
+}
+
 // get product by id service
 const getProductByIdService = async (productData) => {
   try {
@@ -86,7 +99,6 @@ const getProductFilterByConditionServices = async (productData) => {
       // Thực hiện tìm kiếm dựa trên điều kiện xây dựng
       product = await productModel.find(conditions).exec();
     }
-    console.log(product,'products');
     if (product) {
       return {
         status: 200,
@@ -177,5 +189,6 @@ module.exports = {
   getAllProductServices,
   createProductServices,
   getProductFilterByConditionServices,
-  getProductByIdService
+  getProductByIdService,
+  getPaginatedResults
 };

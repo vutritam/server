@@ -43,10 +43,7 @@ const notifiSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    location:{
-        type: String,
-        default: ''
-    }
+    locationId: { type: Schema.Types.ObjectId, ref: "Location" },
     
 })
 
