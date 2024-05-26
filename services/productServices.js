@@ -129,6 +129,7 @@ const createProductServices = async (productData) => {
     EndDate,
     quantity,
     user,
+    file,
     viewer,
     position,
     status,
@@ -146,8 +147,6 @@ const createProductServices = async (productData) => {
       throw new AuthenticationError("Tên sản phẩm đã tổn tại", 400);
     }
 
-    const imageName = productData.file.originalname;
-
     // Tiếp tục xử lý tạo sản phẩm
 
     const newProduct = {
@@ -158,7 +157,7 @@ const createProductServices = async (productData) => {
       EndDate,
       quantity,
       user,
-      file: imageName,
+      file,
       position,
       viewer,
       status,
@@ -179,7 +178,7 @@ const createProductServices = async (productData) => {
     }
   } catch (error) {
     // Handle specific exceptions
-    console.error("Error in loginServices:", error);
+    console.error("Error in productsServices:", error);
     // Handle specific exceptions as needed
     throw error;
   }

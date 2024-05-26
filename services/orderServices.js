@@ -725,7 +725,6 @@ const createNewMuptipleOrderServices = async (orderData) => {
         })
       );
     }
-    console.log(results, "resuflt");
     const groupedResults = results.reduce((acc, curr) => {
       const key = curr.success ? "success" : "failure";
       if (!acc[key]) {

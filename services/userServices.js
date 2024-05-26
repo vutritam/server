@@ -42,7 +42,7 @@ const getAllUsersServices = async () => {
 // @route POST /users
 // @access Private
 const createNewUserServices = async (userData) => {
-  const { username, password, locationId } = userData;
+  const { username, file, password, locationId } = userData;
 
   try {
     // Check for required fields
@@ -61,7 +61,7 @@ const createNewUserServices = async (userData) => {
     const hashedPwd = await bcrypt.hash(password, 10); // salt rounds
 
     // Create and store new user
-    const userObject = { username, locationId, password: hashedPwd };
+    const userObject = { username, locationId, file, password: hashedPwd };
     const user = await User.create(userObject);
 
     if (user) {
@@ -163,15 +163,14 @@ const updatePasswordUserServices = async (userData)=>{
 const updateProfileUserServices = async (userData)=>{
 
   try {
-  const { _id, username, email, address} = userData.body
-    const imageName = userData?.file?.originalname || '';
+  const { _id, username,file, email, address} = userData.body
+
     const newDataUser = {
       username,
       email,
-      file: imageName,
-      address,
+      file,
+      address
     }
- 
     const userUpdate = await User.findByIdAndUpdate(_id, newDataUser, {returnDocument: true}).exec();
       if(userUpdate) {
         return {
