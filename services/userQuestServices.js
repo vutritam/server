@@ -5,14 +5,22 @@ const User = require("../models/User");
 const updateIsChangeRequestUserServices = async (userData) => {
   try {
     const { _id, isRequest, reason, locationId , status} = userData;
-    const checkExisted = await UserRequest.findOne({ userId: _id });
-    if (checkExisted ) {
-      checkExisted.reason = reason;
-      checkExisted.isRequest = isRequest;
-      checkExisted.locationId = locationId;
-      checkExisted.status = status;
-      const updateSuccess = await checkExisted.save();
-      if (updateSuccess && isRequest !== "change_location") {
+    const updatedUserRequest = await UserRequest.findOneAndUpdate(
+      { userId: _id },
+      {
+        reason: reason,
+        isRequest: isRequest,
+        locationId: locationId,
+        status: status,
+      },
+      {
+        new: true, // Trả về tài liệu đã cập nhật
+        upsert: true, // Tạo tài liệu mới nếu không tìm thấy
+        useFindAndModify: false, // Sử dụng native findOneAndUpdate thay vì findAndModify
+      }
+    );
+    if (updatedUserRequest ) {
+      if (isRequest !== "change_location") {
         return {
           success: true,
           message: "Hủy yêu cầu thành công",

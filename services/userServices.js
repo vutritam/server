@@ -7,7 +7,10 @@ const AuthenticationError = require("../config/authenticationError");
 const getUserByIdServices = async (userData) => {
   try {
     // Logic để lấy danh sách người dùng từ database
-    const userServices = await User.findById(userData).select("-password").populate("userRequestId").populate("locationId").exec();
+    const userServices = await User.findById(userData)
+    .select("-password")
+    .populate("userRequestId")
+    .populate("locationId").exec();
     if (userServices) {
       return {
         success: true,
